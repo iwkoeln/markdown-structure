@@ -1,0 +1,15 @@
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+     backupGlobals="true"
+     colors="true"
+     testdox="true"
+     processIsolation="false"
+     stopOnError="false"
+     stopOnFailure="false"
+     stopOnIncomplete="false"
+     stopOnSkipped="false"
+     stopOnRisky="false"
+     timeoutForSmallTests="100"
+     timeoutForMediumTests="100"
+     timeoutForLargeTests="600">
+</phpunit>

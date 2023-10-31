@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# COLORS
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+PURPLE='\033[1;35m'
+ORANGE='\033[0;33m'
+NO_COLOR='\033[0m'
+
+ERROR=${RED}
+SUCCESS=${GREEN}
+PROMPT=${BLUE}
+PREVIEW=${ORANGE}
+DESCRIPTION=${PURPLE}
+NC=${NO_COLOR}
+
+# FANCY PROMPTS
+
+function prompt_user() {
+    msg="$*"
+    line=$(echo "$msg" | sed 's/./─/g')
+    topedge="${PROMPT}┌─$line─┐${NC}"
+    botedge="${PROMPT}└─$line─┘${NC}"
+    msg="${PROMPT}│${NC} $* ${PROMPT}│${NC}"
+    echo -e "$topedge"
+    echo -e "$msg"
+    echo -e "$botedge"
+    echo ""
+}
+
+function cmd_success() {
+    msg="$*"
+    line=$(echo "$msg" | sed 's/./─/g')
+    topedge="${SUCCESS}┌─$line─┐${NC}"
+    botedge="${SUCCESS}└─$line─┘${NC}"
+    msg="${SUCCESS}│${NC} $* ${SUCCESS}│${NC}"
+    echo -e "$topedge"
+    echo -e "$msg"
+    echo -e "$botedge"
+    echo ""
+}
+
+function cmd_error() {
+    msg="$*"
+    line=$(echo "$msg" | sed 's/./─/g')
+    topedge="${ERROR}┌─$line─┐${NC}"
+    botedge="${ERROR}└─$line─┘${NC}"
+    msg="${ERROR}│${NC} $* ${ERROR}│${NC}"
+    echo -e "$topedge"
+    echo -e "$msg"
+    echo -e "$botedge"
+    echo ""
+}
+
+function run_cmd() {
+    msg="${PREVIEW}» $*${NC}"
+    echo -e "$msg"
+}
+
+run_cmd "Test if xdebug is enabled"
+
+# Run `php -i | grep xdebug` and store the output
+output=$(php -i | grep xdebug)
+
+# Check if the output is empty or contains a string
+if [[ -z $output ]]; then
+  cmd_error "Please enable xdebug"
+  exit 1
+else
+  cmd_success "Xdebug extension found."
+  run_cmd "Running tests with coverage"
+
+  export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests --coverage-text --coverage-filter ./src $@
+fi
+
+
