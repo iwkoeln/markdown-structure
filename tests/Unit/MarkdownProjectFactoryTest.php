@@ -5,6 +5,7 @@ namespace Iwm\MarkdownStructure\Unit;
 use ErrorException;
 use InvalidArgumentException;
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
+use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use PHPUnit\Framework\TestCase;
 
@@ -18,9 +19,9 @@ class MarkdownProjectFactoryTest extends TestCase
      */
     public function testException(): void
     {
-        $basePath = '/var/www/html';
-        $mdProjectPath = '/var/www';
-        $indexPath = '/var/www/html/tests/Data/index.md';
+        $basePath = getenv('BASE_PATH') ?: '/var/www/html';
+        $mdProjectPath = dirname($basePath);
+        $indexPath = "$mdProjectPath/index.md";
         $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
         $this->expectException(InvalidArgumentException::class);
@@ -34,9 +35,9 @@ class MarkdownProjectFactoryTest extends TestCase
      */
     public function testMarkdownProject()
     {
-        $basePath = '/var/www/html';
-        $mdProjectPath = '/var/www/html/tests/Data';
-        $indexPath = '/var/www/html/tests/Data/index.md';
+        $basePath = getenv('BASE_PATH') ?: '/var/www/html';
+        $mdProjectPath = "$basePath/tests/Data";
+        $indexPath = "$mdProjectPath/index.md";
         $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
         $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);

@@ -16,6 +16,8 @@ mutagen_enabled: false
 use_dns_when_possible: true
 composer_version: "2"
 omit_containers: [db, dba, ddev-ssh-agent]
+environment:
+  - BASE_PATH=/var/www/html
 
 # Key features of ddev's config.yaml:
 

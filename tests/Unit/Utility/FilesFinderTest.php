@@ -13,18 +13,21 @@ class FilesFinderTest extends TestCase
      */
     public function testIfFilesFinderFindsFiles()
     {
-        $files = FilesFinder::findFilesbyPath('/var/www/html/tests/Data');
+        $basePath = getenv('BASE_PATH') ?: '/var/www/html';
+
+        $dataPath = "$basePath/tests/Data";
+        $files = FilesFinder::findFilesbyPath($dataPath);
         $expectedFiles = [
-            "/var/www/html/tests/Data/index.md",
-            "/var/www/html/tests/Data/extra-info/sub-file.md",
-            "/var/www/html/tests/Data/img/example.gif",
-            "/var/www/html/tests/Data/img/image.png",
-            "/var/www/html/tests/Data/img/jpg/non-image.txt",
-            "/var/www/html/tests/Data/img/non-image.txt",
-            "/var/www/html/tests/Data/img/example.svg",
-            "/var/www/html/tests/Data/img/image.jpg",
-            "/var/www/html/tests/Data/validator/cause-error.md",
-            "/var/www/html/tests/Data/extra-info.md",
+            "$dataPath/index.md",
+            "$dataPath/extra-info/sub-file.md",
+            "$dataPath/img/example.gif",
+            "$dataPath/img/image.png",
+            "$dataPath/img/jpg/non-image.txt",
+            "$dataPath/img/non-image.txt",
+            "$dataPath/img/example.svg",
+            "$dataPath/img/image.jpg",
+            "$dataPath/validator/cause-error.md",
+            "$dataPath/extra-info.md",
         ];
         $this->assertEquals($expectedFiles, $files);
     }
