@@ -50,7 +50,7 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
         $pathToYouDocIndexFile
     );
     ```
-4. Customize validators and error handlers:
+4. Customize validators and file-parser:
     ```php
     $factory->enableValidation = true;
     $factory->addValidators([
@@ -58,11 +58,16 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
         new LinkValidator(),
         new MarkdownValidator(),
     ]);
-    
-    $factory->setErrorHandlers([
-        new ImageErrorHandler(),
-        new LinkErrorHandler(),
-        new MarkdownErrorHandler(),
+
+    $factory->addFileParsers([
+        new SplitByEmptyLineParser(),
+        new HeadlinesToSectionParser(),
+        new RemoveDevSections(),
+        new CombineTextAndImagesParser(),
+        new CombineTextAndListParser(),
+        new MarkdownToHTMLParser(),
+        new ParagraphToContainerParser(),
+        new SectionsToHtmlParser()
     ]);
     ```
 5. Create your markdown-structure project:
@@ -76,7 +81,6 @@ You can disable the nested structure of the project by setting the `enableNested
 ```php
 $factory->enableNestedStructure = false;
 ```
-
 
 ## Contributing
 
