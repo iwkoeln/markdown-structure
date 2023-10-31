@@ -1,18 +1,20 @@
 <?php
 
-namespace IWM\MarkdownStructure\Value;
+namespace Iwm\MarkdownStructure\Value;
+
+// TODO: Handle references between images and Markdown files.
 
 class MarkdownFile
 {
+    public array $sectionedResult = [];
     public function __construct(
         readonly public string $path,
         readonly public string $markdown,
-        readonly public string $html,
+        public string $html,
         readonly public ?array $errors = null
     )
     {
     }
-
 
     public function __toString(): string
     {

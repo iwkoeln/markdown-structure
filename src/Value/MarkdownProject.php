@@ -1,14 +1,17 @@
 <?php
 
-namespace IWM\MarkdownStructure\Value;
+namespace Iwm\MarkdownStructure\Value;
 
-final readonly class MarkdownProject
+final class MarkdownProject
 {
     public function __construct(
         public string $rootPath,
-        public array $projectFiles,
-        public array $projectMediaFiles,
+        public string $mdProjectPath,
+        public array  $projectFiles,
+        public array  $projectMediaFiles,
         public string $indexPath,
+        public array  $files = [],
+        public array  $externalFiles = [],
         public ?array $projectFilesNested = null,
         public ?array $errors = null,
     ) {}

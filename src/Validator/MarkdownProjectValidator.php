@@ -1,17 +1,21 @@
 <?php
 
-namespace IWM\MarkdownStructure;
+namespace Iwm\MarkdownStructure\Validator;
 
-use App\Utility\PathUtility;
+use Iwm\MarkdownStructure\ErrorHandler\LinkTargetNotFoundError;
+use Iwm\MarkdownStructure\Utility\PathUtility;
 use League\CommonMark\Output\RenderedContentInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 class MarkdownProjectValidator implements ValidatorInterface
 {
-
-    public function validate(RenderedContentInterface $parsedResult, string $path, array $fileList): array
+    public function validate(RenderedContentInterface|null $parsedResult, string $path, array $fileList): array
     {
         $errors = [];
+
+        if(!$this->fileCanBeValidated($path) || $parsedResult === null) {
+            return $errors;
+        }
 
         $domCrawler = new Crawler($parsedResult->getContent());
         $linkNodes = $domCrawler->filter('a');
@@ -32,11 +36,12 @@ class MarkdownProjectValidator implements ValidatorInterface
                         }
                     }
 
-                    $path2 = PathUtility::resolveAbsolutePath($path, $urlParts['path']);
-                    if (!empty($path2) && !in_array($path2, $fileList, true)) {
-                        $error = sprintf('Ziel von Link "%s" nicht vorhanden!', $path2);
+                    $absolutPath = PathUtility::resolveAbsolutPath($path, $urlParts['path']);
+                    if (!empty($absolutPath) && !in_array($absolutPath, $fileList)) {
+                        $error = new LinkTargetNotFoundError($path, 'Link target not found');
+                        $error->setUnfoundFilePath($absolutPath);
                         if ($linkNode->nodeValue) {
-                            $error .= ' Linktext: ' . $linkNode->nodeValue;
+                            $error->setLinkText($linkNode->nodeValue);
                         }
                         $errors[] = $error;
                     }
@@ -45,5 +50,14 @@ class MarkdownProjectValidator implements ValidatorInterface
         }
 
         return $errors;
+    }
+
+    public function fileCanBeValidated(string $path): bool
+    {
+        if (PathUtility::isMarkdownFile($path)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

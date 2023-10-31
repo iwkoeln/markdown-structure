@@ -1,6 +1,6 @@
 <?php
 
-namespace IWM\MarkdownStructure;
+namespace Iwm\MarkdownStructure\Utility;
 
 class FileTreeBuilder
 {
