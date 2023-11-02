@@ -7,9 +7,18 @@ pipelines:
         caches:
           - composer
         script:
-          # Install dependencies
-          - apt-get update && apt-get install -y unzip libzip-dev git
+          # Update the package repository and install necessary tools
+          - apt-get update
+          - apt-get install -y unzip libzip-dev git
+
+          # Install Xdebug
+          - pecl install xdebug
+          - docker-php-ext-enable xdebug
+
+          # Install zip extension
           - docker-php-ext-install zip
+
+          # Install Composer
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
           # Set the base path for the tests

@@ -53,7 +53,7 @@
             "@composer dump -o",
             "@test-php-unit-coverage"
         ],
-        "test-php-unit": "./vendor/bin/phpunit tests",
+        "test-php-unit": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests",
         "test-php-unit-coverage": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests --coverage-text --coverage-filter ./src"
     }
 }

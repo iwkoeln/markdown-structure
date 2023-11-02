@@ -1,5 +1,6 @@
 /.idea
 /vendor
+/reports
 *.phar
 /.php_cs.cache
 /.build/reports
