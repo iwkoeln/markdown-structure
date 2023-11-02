@@ -32,7 +32,8 @@
     "require-dev": {
         "phpunit/phpunit": "^10.2",
         "seld/phar-utils": "^1.2",
-        "symfony/var-dumper": "^6.3"
+        "symfony/var-dumper": "^6.3",
+        "ext-http": "*"
     },
     "autoload": {
         "psr-4": {

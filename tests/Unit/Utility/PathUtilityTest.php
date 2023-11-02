@@ -2,6 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Utility;
 
+use http\Exception\RuntimeException;
 use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use PHPUnit\Framework\TestCase;
@@ -54,6 +55,13 @@ class PathUtilityTest extends AbstractTestCase
         $expectedDirName = $this->workspacePath;
         $dirName = PathUtility::dirname($fileName, 2);
         $this->assertEquals($expectedDirName, $dirName);
+
+        $expectedDirName = '';
+        $dirName = PathUtility::dirname('./someRootFile.md');
+        $this->assertEquals($expectedDirName, $dirName);
+
+        $this->expectException(RuntimeException::class);
+        PathUtility::rmdir('non-existing-dir');
     }
 
     /**
@@ -147,6 +155,13 @@ class PathUtilityTest extends AbstractTestCase
 
         $fileTree = PathUtility::buildFileTree($filePaths);
 
+        $this->assertSame($expectedFileTree, $fileTree);
+
+        $oneLineTree = 'index.md';
+        $expectedFileTree = [
+            'index.md' => 'index.md',
+        ];
+        $fileTree = PathUtility::buildFileTree([$oneLineTree]);
         $this->assertSame($expectedFileTree, $fileTree);
     }
 
