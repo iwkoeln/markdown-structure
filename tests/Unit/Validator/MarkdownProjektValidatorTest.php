@@ -1,36 +1,76 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Unit\Validator;
+namespace Iwm\MarkdownStructure\Tests\Unit\Validator;
 
 use Iwm\MarkdownStructure\ErrorHandler\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
+use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Validator\MarkdownProjectValidator;
+use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use PHPUnit\Framework\TestCase;
 
-class MarkdownProjektValidatorTest extends TestCase
+class MarkdownProjektValidatorTest extends AbstractTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        mkdir($this->workspacePath . '/docs-with-errors', 0777, true);
+        mkdir($this->workspacePath . '/docs-with-errors/validator', 0777, true);
+        mkdir($this->workspacePath . '/docs-with-errors/img', 0777, true);
+
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/index.md', $this->workspacePath . '/docs-with-errors/index.md');
+
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/image-not-in-img.png', $this->workspacePath . '/docs-with-errors/image-not-in-img.png');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->workspacePath . '/docs-with-errors/img/non-image.txt');
+
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/validator/cause-error.md', $this->workspacePath . '/docs-with-errors/validator/cause-error.md');
+    }
+
     /**
      * @test
      * @testdox MarkdownProjectValidator logs error if linked markdown file not exists in rootline
      */
-    public function testValidate()
+    public function testValidation()
     {
+        $this->assertEquals(
+            [],
+            (new MarkdownProjectValidator())->validate(null, $this->workspacePath . '/docs-with-errors/img/non-image.txt', [])
+        );
 
-        $basePath = getenv('BASE_PATH') ?: '/var/www/html';
-        $mdProjectPath = "$basePath/tests/Data";
-        $indexPath = "$mdProjectPath/index.md";
-        $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
+        $markdown = '[An error](cause-error.md)';
+        $parser = new GithubFlavoredMarkdownConverter([]);
+        $parser->getEnvironment()->addExtension(new HeadingPermalinkExtension());
+        $html = $parser->convert($markdown);
 
-        $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+        $expectedError = new LinkTargetNotFoundError(
+            $this->workspacePath . '/docs-with-errors/index.md',
+            'Link target not found'
+        );
 
-        $project = $factory->create();
+        $expectedError->setLinkText('An error');
+        $expectedError->setUnfoundFilePath($this->workspacePath . '/docs-with-errors/cause-error.md');
 
-        $errors = $project->getFileByPath("$mdProjectPath/validator/cause-error.md")->errors;
-        $expectedErrors = [
-            0 => new LinkTargetNotFoundError("$mdProjectPath/validator/cause-error.md", 'Link target not found'),
-        ];
-        $expectedErrors[0]->setLinkText('This link lies not in root');
-        $expectedErrors[0]->setUnfoundFilePath('/README.md');
+        $this->assertEquals(
+            [
+                $expectedError
+            ],
+            (new MarkdownProjectValidator())->validate(
+                $html,
+                $this->workspacePath . '/docs-with-errors/index.md',
+                []
+            )
+        );
+    }
 
-        $this->assertEquals($expectedErrors, $errors);
+    /**
+     * @test
+     * @testdox MarkdownProjectValidator can skip non md files
+     */
+    public function testSkipIfFileCannotBeValidated()
+    {
+        $this->assertTrue((new MarkdownProjectValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/index.md'));
+        $this->assertFalse((new MarkdownProjectValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/img/non-image.txt'));
     }
 }

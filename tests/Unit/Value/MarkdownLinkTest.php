@@ -1,12 +1,13 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Unit\Value;
+namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
+use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
 use PHPUnit\Framework\TestCase;
 
-class MarkdownLinkTest extends TestCase
+class MarkdownLinkTest extends AbstractTestCase
 {
     /**
      * @test
@@ -28,5 +29,15 @@ class MarkdownLinkTest extends TestCase
         $this->assertFalse($markdownLink->isExternal);
         $markdownLink = new MarkdownLink('index.md', PathUtility::isExternalUrl('../index.md'), 'test.md');
         $this->assertFalse($markdownLink->isExternal);
+    }
+
+    /**
+     * @test
+     * @testdox MarkdownLink can convert to an absolute path
+     */
+    public function testMarkdownLinkAbsolutLink()
+    {
+        $markdownLink = new MarkdownLink('../index.md', PathUtility::isExternalUrl('../index.md'), 'var/www/html/src/some/data/test.md');
+        $this->assertEquals($markdownLink->absolutePath(), 'var/www/html/src/some/index.md');
     }
 }

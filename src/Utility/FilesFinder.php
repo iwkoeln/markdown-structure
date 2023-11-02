@@ -51,6 +51,7 @@ class FilesFinder
         // Close the directory handle
         closedir($dirHandle);
 
+        sort($files);
         return $files;
     }
 }

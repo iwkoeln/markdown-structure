@@ -1,20 +1,32 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Unit\Value;
+namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
+use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Value\MediaFile;
 use PHPUnit\Framework\TestCase;
 
-class MediaFileTest extends TestCase
+class MediaFileTest extends AbstractTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        mkdir($this->workspacePath . '/docs', 0777, true);
+        mkdir($this->workspacePath . '/docs/img', 0777, true);
+
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->workspacePath . '/docs/img/image.jpg');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.png', $this->workspacePath . '/docs/img/image.png');
+    }
+
     /**
      * @test
      * @testdox MediaFile is to string convertable
      */
     public function testToStringConversion()
     {
-        $path = '/var/www/html/tests/Data/img/image.png';
-        $image = '/var/www/html/tests/Data/img/image.png';
+        $path = $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image);
         $this->assertEquals($path, (string) $mediaFile);
@@ -25,8 +37,8 @@ class MediaFileTest extends TestCase
      */
     public function testMediaFileConstructors()
     {
-        $path = '/var/www/html/tests/Data/img/image.png';
-        $image = '/var/www/html/tests/Data/img/image.png';
+        $path = $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image);
         $this->assertEquals($path, (string) $mediaFile);

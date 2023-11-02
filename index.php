@@ -17,9 +17,9 @@ use Symfony\Component\ErrorHandler\Debug;
 
 Debug::enable();
 
-$basePath = '/var/www/html';
-$mdProjectPath = '/var/www/html/tests/Data';
-$indexPath = '/var/www/html/tests/Data/index.md';
+$basePath = getenv('BASE_PATH') ?: '/var/www/html';
+$mdProjectPath = "$basePath/tests/Fixtures/docs";
+$indexPath = "$mdProjectPath/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
 $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);

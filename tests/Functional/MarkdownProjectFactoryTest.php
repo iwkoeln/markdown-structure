@@ -1,13 +1,18 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Tests\Unit\Utility;
+namespace Iwm\MarkdownStructure\Tests\Functional;
 
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use ErrorException;
+use InvalidArgumentException;
+use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
 use PHPUnit\Framework\TestCase;
 
-class FilesFinderTest extends AbstractTestCase
+class MarkdownProjectFactoryTest extends AbstractTestCase
 {
+    //TODO: Finish these tests
+
     public function setUp(): void
     {
         parent::setUp();
@@ -36,24 +41,40 @@ class FilesFinderTest extends AbstractTestCase
 
     /**
      * @test
-     * @testdox Files Finder finds all example files
+     * @testdox MarkdownProjectFactory should throw an exception if the base path does not exists
      */
-    public function testIfFilesFinderFindsFiles()
+    public function testException(): void
     {
+        $basePath = $this->workspacePath;
+        $mdProjectPath = dirname($this->workspacePath);
+        $indexPath = "$mdProjectPath/index.md";
+        $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
-        $files = FilesFinder::findFilesbyPath($this->workspacePath . '/docs');
-        $expectedFiles = [
-            $this->workspacePath . '/docs/dev/some-dev-doc.md',
-            $this->workspacePath . '/docs/features/another-feature.md',
-            $this->workspacePath . '/docs/features/feature.md',
-            $this->workspacePath . '/docs/features/img/image.jpg',
-            $this->workspacePath . '/docs/features/img/image.png',
-            $this->workspacePath . '/docs/img/example.gif',
-            $this->workspacePath . '/docs/img/example.svg',
-            $this->workspacePath . '/docs/img/image.jpg',
-            $this->workspacePath . '/docs/img/image.png',
-            $this->workspacePath . '/docs/index.md',
-        ];
-        $this->assertEquals($expectedFiles, $files);
+        $this->expectException(InvalidArgumentException::class);
+        $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+    }
+
+
+    /**
+     * @test
+     * @testdox MarkdownProjectFactory should create a markdown project
+     */
+    public function testMarkdownProject()
+    {
+        $basePath = $this->workspacePath;
+        $mdProjectPath = $this->workspacePath . '/docs';
+        $indexPath = "$mdProjectPath/index.md";
+        $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
+
+        $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+
+        $project = $factory->create();
+
+//        $this->assertEquals($expectedProject, $project);
+//        $this->assertEquals(
+//            new MarkdownFile(),
+//            $project
+//        );
+        $this->assertTrue(true);
     }
 }

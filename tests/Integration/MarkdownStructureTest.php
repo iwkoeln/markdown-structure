@@ -1,6 +1,6 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Integration;
+namespace Iwm\MarkdownStructure\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 

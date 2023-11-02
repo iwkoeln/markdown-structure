@@ -1,19 +1,29 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Unit\Value;
+namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
+use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use PHPUnit\Framework\TestCase;
 
-class MarkdownFileTest extends TestCase
+class MarkdownFileTest extends AbstractTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        mkdir($this->workspacePath . '/docs', 0777, true);
+
+        copy(__DIR__ . '/../../Fixtures/docs/index.md', $this->workspacePath . '/docs/index.md');
+    }
+
     /**
      * @test
      * @testdox MarkdownFile is to string convertable
      */
     public function testToStringConversion()
     {
-        $path = '/var/www/html/tests/Data/index.md';
+        $path = $this->workspacePath . '/docs/index.md';
         $markdown = '';
         $html = '';
 

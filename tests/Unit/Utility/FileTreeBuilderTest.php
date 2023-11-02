@@ -1,11 +1,12 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Unit\Utility;
+namespace Iwm\MarkdownStructure\Tests\Unit\Utility;
 
+use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
 use PHPUnit\Framework\TestCase;
 
-class FileTreeBuilderTest extends TestCase
+class FileTreeBuilderTest extends AbstractTestCase
 {
     public array $filePaths = [
         '/var/www/html/tests/Data/index.md',

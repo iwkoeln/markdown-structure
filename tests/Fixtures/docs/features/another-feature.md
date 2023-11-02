@@ -43,11 +43,3 @@ Vestibulum ullamcorper mauris at ligula. Nullam accumsan lorem in dui. Praesent 
 ### Dev: Dev Section Test Level 3
 
 Duis vel nibh at velit scelerisque suscipit. In hac habitasse platea dictumst. Nunc sed turpis. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Etiam sit amet orci eget eros faucibus tincidunt.
-
-## Link example
-
-[Link example](extra-info.md)
-
-[README.md](../../README.md)
-
-[External Link](www.google.com)
