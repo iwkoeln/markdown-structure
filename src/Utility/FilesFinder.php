@@ -13,6 +13,7 @@ class FilesFinder
      */
     public static function findFilesByPath(string $path): array
     {
+        // TODO: Implement with Symfony Finder
         $files = [];
 
         // Validate the directory path

@@ -1,6 +1,6 @@
 <?php
 
-namespace Iwm\MarkdownStructure\ErrorHandler;
+namespace Iwm\MarkdownStructure\Error;
 
 class LinkTargetNotFoundError extends AbstractError
 {

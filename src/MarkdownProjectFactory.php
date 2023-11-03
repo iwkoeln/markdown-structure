@@ -146,7 +146,7 @@ class MarkdownProjectFactory
         }
     }
 
-    public function parseFile(MarkdownFile &$markdownFile): void
+    public function parseFile(MarkdownFile $markdownFile): void
     {
         foreach ($this->fileParsers as $parser) {
             $parser->parse($markdownFile);
@@ -172,11 +172,7 @@ class MarkdownProjectFactory
         $errors = [];
         if ($this->enableValidation) {
             foreach ($this->validators as $validator) {
-                $errors = array_merge($errors, $validator->validate($parsedResult, $filePath, $this->projectFiles));
-            }
-
-            if (count($errors) > 0 && !isset($this->errors[$filePath])) {
-                $this->errors[$filePath] = $errors;
+                $this->errors[$filePath] = array_merge($errors, $validator->validate($parsedResult, $filePath, $this->projectFiles));
             }
         }
         return $errors;

@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Validator;
 
-use Iwm\MarkdownStructure\ErrorHandler\LinkTargetNotFoundError;
+use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Validator\MarkdownProjectValidator;

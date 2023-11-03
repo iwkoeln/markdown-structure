@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Validator;
 
-use Iwm\MarkdownStructure\ErrorHandler\LinkTargetNotFoundError;
+use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use League\CommonMark\Output\RenderedContentInterface;
 use Symfony\Component\DomCrawler\Crawler;
