@@ -58,9 +58,9 @@ class MarkdownProjectFactory
 
     public function __construct(
         private readonly string $rootPath,
-        private readonly string $fallbackBaseUrl,
-        private ?string         $projectPath = null,
-        private readonly string $projectEntryPointPath = 'index.md',
+        string $projectPath = 'docs/',
+        string $projectEntryPointPath = 'index.md',
+        private ?string $fallbackBaseUrl = null,
     )
     {
         // Set default markdownParser
@@ -71,12 +71,9 @@ class MarkdownProjectFactory
         // Set default validator
         $this->validators[] = new MarkdownProjectValidator();
 
-        if ($projectPath === null) {
-            $this->projectPath = $rootPath;
-        }
-        if (!PathUtility::isPathBefore($this->projectPath, $this->rootPath)) {
-            throw new InvalidArgumentException(sprintf('The path of the Markdown project must be a subdirectory of the base path. Base path: %s, Markdown project path: %s', $this->rootPath, $this->projectPath));
-        }
+        $this->projectPath = $rootPath . $projectPath;
+        $this->projectEntryPointPath = $projectPath . $projectEntryPointPath;
+
         $this->loadFilesByPath($this->projectPath);
     }
 
