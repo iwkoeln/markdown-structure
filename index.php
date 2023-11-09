@@ -19,7 +19,7 @@ use Symfony\Component\ErrorHandler\Debug;
 Debug::enable();
 
 $basePath = getenv('BASE_PATH') ?: '/var/www/html';
-$mdProjectPath = "/tests/Fixtures/docs";
+$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
 $indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 

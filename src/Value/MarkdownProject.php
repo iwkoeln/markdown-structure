@@ -7,9 +7,9 @@ final class MarkdownProject
     public function __construct(
         public string $projectPath,
         public string $documentationPath,
+        public string $documentationEntryPoint,
         public array  $documentationFiles,
         public array  $documentationMediaFiles,
-        public string $documentationEntryPoint,
         public array  $projectFiles = [],
         public array  $referencedExternalFiles = [],
         public ?array $projectFilesNested = null,

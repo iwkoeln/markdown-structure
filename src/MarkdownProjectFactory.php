@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
+use Iwm\MarkdownStructure\Utility\GitFilesFinder;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
 use Iwm\MarkdownStructure\Validator\ValidatorInterface;
@@ -23,6 +24,7 @@ use League\CommonMark\Output\RenderedContentInterface;
 use League\Config\Exception\ConfigurationExceptionInterface;
 use SplFileInfo;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\ErrorHandler\Debug;
 
 class MarkdownProjectFactory
 {
@@ -64,7 +66,7 @@ class MarkdownProjectFactory
         $this->validators[] = new MarkdownLinksValidator();
 
         $this->documentationPath = $projectPath . $documentationPath;
-        $this->documentationEntryPoint = $documentationPath . $documentationEntryPoint;
+        $this->documentationEntryPoint = $this->documentationPath . $documentationEntryPoint;
 
         $this->loadFilesByPath($this->documentationPath);
     }
@@ -92,9 +94,9 @@ class MarkdownProjectFactory
         return new MarkdownProject(
             $this->projectPath,
             $this->documentationPath,
+            $this->documentationEntryPoint,
             $this->documentationFiles,
             $this->documentationMediaFiles,
-            $this->documentationEntryPoint,
             $this->projectFiles,
             $this->referencedExternalFiles,
             $this->nestedDocumentationFiles,
@@ -210,14 +212,34 @@ class MarkdownProjectFactory
 
     private function readFile(string $filePath): string
     {
-        $closure = $this->readFileFunction;
-        if (null === $closure) {
-            $closure = static function (string $filePath) {
-                return file_get_contents($filePath);
-            };
-        }
+        // Check if the project path is a Git repository
+        if (PathUtility::isGitRepository($this->documentationPath)) {
 
-        return $closure($filePath);
+            // Extract the relative path from the full file path
+            $relativePath = PathUtility::resolveRelativePath($this->documentationPath, $filePath);
+
+            // Use the git show command to get the file content from the bare repository
+            $branchOrTag = 'master';
+            $command = sprintf('git --git-dir=%s show %s:%s',
+                escapeshellarg($this->documentationPath),
+                escapeshellarg($branchOrTag),
+                escapeshellarg($relativePath));
+
+            $output = shell_exec($command);
+
+            if ($output === null) {
+                throw new \RuntimeException(sprintf('Failed to read file from Git repository: %s', $filePath));
+            }
+            return $output;
+        } else {
+
+            // For regular directories, read the file content normally
+            $content = file_get_contents($filePath);
+            if ($content === false) {
+                throw new \RuntimeException(sprintf('Failed to open file: %s', $filePath));
+            }
+            return $content;
+        }
     }
 
     private function extractLinks(RenderedContentInterface $parsedResult, object|string $currentFile): array
@@ -226,7 +248,6 @@ class MarkdownProjectFactory
 
         $links = array_filter($extractedLinks, function ($link) {
             // Perform any additional checks or processing here
-            // For example, you might want to skip certain links based on some criteria
             // Return true to keep the link, or false to skip it
             return true;
         });
@@ -243,7 +264,14 @@ class MarkdownProjectFactory
 
     public function loadFilesByPath(string $path): void
     {
-        $this->addFiles(FilesFinder::findFilesbyPath($path));
+        // Check if the path is a Git repository (bare or non-bare)
+        if (PathUtility::isGitRepository($path)) {
+            $files = GitFilesFinder::listTrackedFiles($path, );
+        } else {
+            $files = FilesFinder::findFilesByPath($path);
+        }
+
+        $this->addFiles($files);
     }
 
     public function addValidators(array $validators): void

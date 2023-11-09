@@ -189,4 +189,22 @@ class PathUtility
 
         return $dirname;
     }
+
+    public static function isGitRepository(string $path): bool
+    {
+        // Check for a .git directory (non-bare repository)
+        if (is_dir($path . '/.git')) {
+            return true;
+        }
+
+        // Check if the directory is a bare repository by looking for common Git repository files
+        $gitFiles = ['config', 'objects', 'refs', 'HEAD'];
+        foreach ($gitFiles as $gitFile) {
+            if (!file_exists($path . '/' . $gitFile)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

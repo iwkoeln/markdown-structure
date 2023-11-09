@@ -63,7 +63,7 @@ class MarkdownProjectTest extends AbstractTestCase
         $projectFilesNested = [];
         $errors = null;
 
-        $markdownProjekt = new MarkdownProject($rootPath, $rootPath, $projectFiles, $projectMediaFiles, $indexPath, [], [], $projectFilesNested, $errors);
+        $markdownProjekt = new MarkdownProject($rootPath, $rootPath, $indexPath, $projectFiles, $projectMediaFiles, [], [], $projectFilesNested, $errors);
 
         $markdownFile = $markdownProjekt->getFileByPath($this->workspacePath . '/docs/index.md');
         $this->assertEquals($this->workspacePath . '/docs/index.md', (string) $markdownFile);
