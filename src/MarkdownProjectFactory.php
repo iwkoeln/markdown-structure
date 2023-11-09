@@ -5,13 +5,6 @@ namespace Iwm\MarkdownStructure;
 use Closure;
 use DOMElement;
 use InvalidArgumentException;
-use Iwm\MarkdownStructure\Parser\CombineTextAndImagesParser;
-use Iwm\MarkdownStructure\Parser\CombineTextAndListParser;
-use Iwm\MarkdownStructure\Parser\HeadlinesToSectionParser;
-use Iwm\MarkdownStructure\Parser\MarkdownToHTMLParser;
-use Iwm\MarkdownStructure\Parser\ParagraphToContainerParser;
-use Iwm\MarkdownStructure\Parser\SectionParser;
-use Iwm\MarkdownStructure\Parser\SplitByEmptyLineParser;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
 use Iwm\MarkdownStructure\Utility\PathUtility;
@@ -34,16 +27,16 @@ class MarkdownProjectFactory
 {
     public bool $enableNestedStructure = true;
 
-    /** @var array|string[] All (but project) files in given repository */
-    public array $files = [];
+    /** @var array|string[] All (but documentation) files in given repository */
+    public array $projectFiles = [];
 
     /** @var array|string[] External files but referenced */
     public array $referencedExternalFiles = [];
-    /** @var array|string[] Markdown project files */
-    public array $projectFiles = [];
-    /** @var array|string[] Media project files */
-    public array $projectMediaFiles = [];
-    public ?array $nestedProjectFiles = null;
+    /** @var array|string[] Markdown files */
+    public array $documentationFiles = [];
+    /** @var array|string[] Media files */
+    public array $documentationMediaFiles = [];
+    public ?array $nestedDocumentationFiles = null;
 
     public ?array $links = null;
     public ?array $errors = null;
@@ -55,10 +48,10 @@ class MarkdownProjectFactory
     private array $fileParsers = [];
 
     public function __construct(
-        private readonly string $rootPath,
-        string $projectPath = 'docs/',
-        string $projectEntryPointPath = 'index.md',
-        private ?string $fallbackBaseUrl = null,
+        private readonly string $projectPath,
+        string                  $documentationPath = 'docs/',
+        string                  $documentationEntryPoint = 'index.md',
+        private ?string         $fallbackBaseUrl = null,
     )
     {
         // Set default markdownParser
@@ -69,10 +62,10 @@ class MarkdownProjectFactory
         // Set default validator
         $this->validators[] = new MarkdownProjectValidator();
 
-        $this->projectPath = $rootPath . $projectPath;
-        $this->projectEntryPointPath = $projectPath . $projectEntryPointPath;
+        $this->documentationPath = $projectPath . $documentationPath;
+        $this->documentationEntryPoint = $documentationPath . $documentationEntryPoint;
 
-        $this->loadFilesByPath($this->projectPath);
+        $this->loadFilesByPath($this->documentationPath);
     }
 
     /**
@@ -82,33 +75,26 @@ class MarkdownProjectFactory
     public function create(): MarkdownProject
     {
         if ($this->enableNestedStructure) {
-            $this->nestedProjectFiles = FileTreeBuilder::buildFileTree($this->projectFiles);
+            $this->nestedDocumentationFiles = FileTreeBuilder::buildFileTree($this->documentationFiles);
         }
 
-        // TODO: Set default fileParsers
-        if ($this->fileParsers === []) {
-            $this->fileParsers = [
-                new SplitByEmptyLineParser(),
-                new HeadlinesToSectionParser(),
-                new CombineTextAndImagesParser(),
-                new CombineTextAndListParser(),
-                new MarkdownToHTMLParser(),
-                new ParagraphToContainerParser(),
-            ];
-        }
+        // TODO: Parse Input Group
+        $this->processDocumentationFiles();
+        $this->processDocumentationMediaFiles();
 
-        $this->processMarkdownFiles();
-        $this->processMediaFiles();
+        // TODO: Validate Output Group
+
+        // TODO: Parse Output Group
 
         return new MarkdownProject(
-            $this->rootPath,
             $this->projectPath,
+            $this->documentationPath,
+            $this->documentationFiles,
+            $this->documentationMediaFiles,
+            $this->documentationEntryPoint,
             $this->projectFiles,
-            $this->projectMediaFiles,
-            $this->projectEntryPointPath,
-            $this->files,
             $this->referencedExternalFiles,
-            $this->nestedProjectFiles,
+            $this->nestedDocumentationFiles,
             $this->errors
         );
     }
@@ -117,9 +103,9 @@ class MarkdownProjectFactory
      * @throws ConfigurationExceptionInterface
      * @throws CommonMarkException
      */
-    private function processMarkdownFiles(): void
+    private function processDocumentationFiles(): void
     {
-        foreach ($this->projectFiles as $projectFilePath) {
+        foreach ($this->documentationFiles as $projectFilePath) {
             $markdownContent = $this->readFile($projectFilePath);
             $parsedResult = $this->markdownParser->convert($markdownContent);
 
@@ -133,10 +119,10 @@ class MarkdownProjectFactory
             $newMarkdownFile = new MarkdownFile($projectFilePath, $markdownContent, $parsedResult->getContent(), $errors);
             $this->parseFile($newMarkdownFile);
 
-            $this->projectFiles[$projectFilePath] = $newMarkdownFile;
+            $this->documentationFiles[$projectFilePath] = $newMarkdownFile;
 
             if ($this->enableNestedStructure) {
-                $this->setValueFromNestedReferencesArray($this->nestedProjectFiles, $projectFilePath, $newMarkdownFile);
+                $this->setValueFromNestedReferencesArray($this->nestedDocumentationFiles, $projectFilePath, $newMarkdownFile);
             }
         }
     }
@@ -148,16 +134,16 @@ class MarkdownProjectFactory
         }
     }
 
-    private function processMediaFiles(): void
+    private function processDocumentationMediaFiles(): void
     {
-        foreach ($this->projectMediaFiles as $projectMediaFilePath) {
+        foreach ($this->documentationMediaFiles as $projectMediaFilePath) {
             $errors = $this->performValidation(null, $projectMediaFilePath);
 
             $newMediaFile = new MediaFile($projectMediaFilePath, $projectMediaFilePath, $errors);
-            $this->projectMediaFiles[$projectMediaFilePath] = $newMediaFile;
+            $this->documentationMediaFiles[$projectMediaFilePath] = $newMediaFile;
 
             if ($this->enableNestedStructure) {
-                $this->setValueFromNestedReferencesArray($this->nestedProjectFiles, $projectMediaFilePath, $newMediaFile);
+                $this->setValueFromNestedReferencesArray($this->nestedDocumentationFiles, $projectMediaFilePath, $newMediaFile);
             }
         }
     }
@@ -167,7 +153,7 @@ class MarkdownProjectFactory
         $errors = [];
         if (empty($this->validators) === false) {
             foreach ($this->validators as $validator) {
-                $this->errors[$filePath] = array_merge($errors, $validator->validate($parsedResult, $filePath, $this->projectFiles));
+                $this->errors[$filePath] = array_merge($errors, $validator->validate($parsedResult, $filePath, $this->documentationFiles));
             }
         }
         return $errors;
@@ -198,14 +184,14 @@ class MarkdownProjectFactory
             throw new InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', $type));
         }
 
-        if (!str_starts_with($filePath, $this->rootPath)) {
+        if (!str_starts_with($filePath, $this->projectPath)) {
             $this->referencedExternalFiles[$filePath] = $filePath;
-        } elseif (str_starts_with($filePath, $this->projectPath) && PathUtility::isMarkdownFile($filePath)) {
-            $this->projectFiles[$filePath] = $filePath;
-        } elseif (str_starts_with($filePath, $this->projectPath) && PathUtility::isMediaFile($filePath)) {
-            $this->projectMediaFiles[$filePath] = $filePath;
+        } elseif (str_starts_with($filePath, $this->documentationPath) && PathUtility::isMarkdownFile($filePath)) {
+            $this->documentationFiles[$filePath] = $filePath;
+        } elseif (str_starts_with($filePath, $this->documentationPath) && PathUtility::isMediaFile($filePath)) {
+            $this->documentationMediaFiles[$filePath] = $filePath;
         } else {
-            $this->files[$filePath] = $filePath;
+            $this->projectFiles[$filePath] = $filePath;
         }
     }
 
