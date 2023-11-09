@@ -4,7 +4,6 @@ namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
 use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
-use PHPUnit\Framework\TestCase;
 
 class MarkdownFileTest extends AbstractTestCase
 {

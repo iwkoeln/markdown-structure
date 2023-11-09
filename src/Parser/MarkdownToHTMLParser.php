@@ -11,9 +11,13 @@ use League\CommonMark\GithubFlavoredMarkdownConverter;
 class MarkdownToHTMLParser implements ParserInterface
 {
     /**
+     * @param mixed $file
+     * @param array|null $documentationFiles
+     * @param array|null $documentationMediaFiles
+     * @param array|null $projectFiles
      * @throws CommonMarkException
      */
-    public function parse(mixed $file): mixed
+    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
     {
         if (!$this->fileIsParsable(get_class($file))) {
             return $file;

@@ -47,3 +47,5 @@ Duis vel nibh at velit scelerisque suscipit. In hac habitasse platea dictumst. N
 ## Link example
 
 [feature.md](../features/feature.md)
+
+[A project file](../../some-code-file.yml)

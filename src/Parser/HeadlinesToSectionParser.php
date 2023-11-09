@@ -8,7 +8,7 @@ use Iwm\MarkdownStructure\Value\SectionType;
 
 class HeadlinesToSectionParser implements ParserInterface
 {
-    public function parse(mixed $file): mixed
+    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
     {
         if (!$this->fileIsParsable(get_class($file))) {
             return $file;

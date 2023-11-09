@@ -119,7 +119,13 @@ class MarkdownProjectFactory
 
             $errors = $this->performValidation($parsedResult, $projectFilePath);
 
-            $newMarkdownFile = new MarkdownFile($projectFilePath, $markdownContent, $parsedResult->getContent(), $errors);
+            $newMarkdownFile = new MarkdownFile(
+                $projectFilePath,
+                $markdownContent,
+                $parsedResult->getContent(),
+                $this->fallbackBaseUrl,
+                $errors
+            );
             $this->parseFile($newMarkdownFile);
 
             $this->documentationFiles[$projectFilePath] = $newMarkdownFile;
@@ -133,7 +139,7 @@ class MarkdownProjectFactory
     public function parseFile(MarkdownFile $markdownFile): void
     {
         foreach ($this->fileParsers as $parser) {
-            $parser->parse($markdownFile);
+            $parser->parse($markdownFile, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
         }
     }
 
@@ -142,7 +148,11 @@ class MarkdownProjectFactory
         foreach ($this->documentationMediaFiles as $projectMediaFilePath) {
             $errors = $this->performValidation(null, $projectMediaFilePath);
 
-            $newMediaFile = new MediaFile($projectMediaFilePath, $projectMediaFilePath, $errors);
+            $newMediaFile = new MediaFile(
+                $projectMediaFilePath,
+                $projectMediaFilePath,
+                $errors
+            );
             $this->documentationMediaFiles[$projectMediaFilePath] = $newMediaFile;
 
             if ($this->enableNestedStructure) {

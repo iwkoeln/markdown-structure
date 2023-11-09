@@ -4,6 +4,7 @@ require_once 'vendor/autoload.php';
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Parser\CombineTextAndImagesParser;
 use Iwm\MarkdownStructure\Parser\CombineTextAndListParser;
+use Iwm\MarkdownStructure\Parser\FallbackUrlForProjectFileLinksParser;
 use Iwm\MarkdownStructure\Parser\HeadlinesToSectionParser;
 use Iwm\MarkdownStructure\Parser\MarkdownToHTMLParser;
 use Iwm\MarkdownStructure\Parser\ParagraphToContainerParser;
@@ -24,6 +25,12 @@ $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
 $factory = new MarkdownProjectFactory($basePath, $mdProjectPath, $indexPath, $url);
 
+$factory->addFiles(
+    [
+        $basePath . '/tests/Fixtures/some-code-file.yml',
+    ]
+);
+
 $factory->addValidators([
     new \Iwm\MarkdownStructure\Validator\MarkdownLinksValidator(),
     new \Iwm\MarkdownStructure\Validator\MediaFileValidator(),
@@ -31,6 +38,7 @@ $factory->addValidators([
 ]);
 
 $factory->addFileParsers([
+    new FallbackUrlForProjectFileLinksParser(),
     new SplitByEmptyLineParser(),
     new HeadlinesToSectionParser(),
     //new RemoveDevSectionsParser(),

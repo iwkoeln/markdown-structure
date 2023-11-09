@@ -9,8 +9,9 @@ class MarkdownFile
     public array $sectionedResult = [];
     public function __construct(
         readonly public string $path,
-        readonly public string $markdown,
+        public string $markdown,
         public string $html,
+        readonly public ?string $fallbackUrl = null,
         readonly public ?array $errors = null
     )
     {

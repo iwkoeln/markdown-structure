@@ -6,7 +6,7 @@ use Iwm\MarkdownStructure\Parser\ParserInterface;
 
 class SplitByEmptyLineParser implements ParserInterface
 {
-    public function parse(mixed $file): mixed
+    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
     {
         if (!$this->fileIsParsable(get_class($file))) {
             return $file;

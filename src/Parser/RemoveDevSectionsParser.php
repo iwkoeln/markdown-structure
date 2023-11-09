@@ -12,7 +12,7 @@ class RemoveDevSectionsParser implements ParserInterface
         return $fileType === 'Iwm\MarkdownStructure\Value\MarkdownFile';
     }
 
-    public function parse(mixed $file): mixed
+    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
     {
         if (!$this->fileIsParsable(get_class($file))) {
             return $file;
