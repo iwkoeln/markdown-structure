@@ -47,11 +47,11 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
     {
         $basePath = $this->workspacePath;
         $mdProjectPath = dirname($this->workspacePath);
-        $indexPath = "$mdProjectPath/index.md";
+        $indexPath = "/index.md";
         $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
         $this->expectException(InvalidArgumentException::class);
-        $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+        $factory = new MarkdownProjectFactory($basePath, $mdProjectPath, $indexPath, $url);
     }
 
 
@@ -62,11 +62,11 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
     public function testMarkdownProject()
     {
         $basePath = $this->workspacePath;
-        $mdProjectPath = $this->workspacePath . '/docs';
-        $indexPath = "$mdProjectPath/index.md";
+        $mdProjectPath = '/docs';
+        $indexPath = "/index.md";
         $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
-        $factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+        $factory = new MarkdownProjectFactory($basePath, $mdProjectPath, $indexPath, $url);
 
         $project = $factory->create();
 

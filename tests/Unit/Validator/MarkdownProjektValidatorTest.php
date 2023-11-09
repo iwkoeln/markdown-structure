@@ -5,7 +5,7 @@ namespace Iwm\MarkdownStructure\Tests\Unit\Validator;
 use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
-use Iwm\MarkdownStructure\Validator\MarkdownProjectValidator;
+use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +36,7 @@ class MarkdownProjektValidatorTest extends AbstractTestCase
     {
         $this->assertEquals(
             [],
-            (new MarkdownProjectValidator())->validate(null, $this->workspacePath . '/docs-with-errors/img/non-image.txt', [])
+            (new MarkdownLinksValidator())->validate(null, $this->workspacePath . '/docs-with-errors/img/non-image.txt', [])
         );
 
         $markdown = '[An error](cause-error.md)';
@@ -46,17 +46,15 @@ class MarkdownProjektValidatorTest extends AbstractTestCase
 
         $expectedError = new LinkTargetNotFoundError(
             $this->workspacePath . '/docs-with-errors/index.md',
-            'Link target not found'
+            $this->workspacePath . '/docs-with-errors/cause-error.md',
+            'An error'
         );
-
-        $expectedError->setLinkText('An error');
-        $expectedError->setUnfoundFilePath($this->workspacePath . '/docs-with-errors/cause-error.md');
 
         $this->assertEquals(
             [
                 $expectedError
             ],
-            (new MarkdownProjectValidator())->validate(
+            (new MarkdownLinksValidator())->validate(
                 $html,
                 $this->workspacePath . '/docs-with-errors/index.md',
                 []
@@ -70,7 +68,7 @@ class MarkdownProjektValidatorTest extends AbstractTestCase
      */
     public function testSkipIfFileCannotBeValidated()
     {
-        $this->assertTrue((new MarkdownProjectValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/index.md'));
-        $this->assertFalse((new MarkdownProjectValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/img/non-image.txt'));
+        $this->assertTrue((new MarkdownLinksValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/index.md'));
+        $this->assertFalse((new MarkdownLinksValidator())->fileCanBeValidated($this->workspacePath . '/docs-with-errors/img/non-image.txt'));
     }
 }

@@ -122,7 +122,7 @@ class PathUtility
         return count($rootParts) <= count($pathParts);
     }
 
-    public static function resolveAbsolutPath(string $basePath, string $relativePath): string
+    public static function resolveAbsolutePath(string $basePath, string $relativePath): string
     {
         $baseParts = explode(DIRECTORY_SEPARATOR, $basePath);
         $relativeParts = explode(DIRECTORY_SEPARATOR, $relativePath);

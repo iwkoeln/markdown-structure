@@ -15,19 +15,19 @@ class MarkdownLinkTest extends AbstractTestCase
      */
     public function testLinkIsExternal()
     {
-        $markdownLink = new MarkdownLink('https://www.google.com', PathUtility::isExternalUrl('https://www.google.com'), 'test.md');
+        $markdownLink = new MarkdownLink('https://www.google.com', 'test.md', PathUtility::isExternalUrl('https://www.google.com'));
         $this->assertTrue($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('http://www.google.com', PathUtility::isExternalUrl('http://www.google.com'), 'test.md');
+        $markdownLink = new MarkdownLink('http://www.google.com', 'test.md', PathUtility::isExternalUrl('http://www.google.com'));
         $this->assertTrue($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('mailto:mai@iwkoeln.de', PathUtility::isExternalUrl('mailto:mai@iwkoeln.de'), 'test.md');
+        $markdownLink = new MarkdownLink('mailto:mai@iwkoeln.de', 'test.md', PathUtility::isExternalUrl('mailto:mai@iwkoeln.de'));
         $this->assertTrue($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('iwkoeln.de', PathUtility::isExternalUrl('iwkoeln.de'), 'test.md');
+        $markdownLink = new MarkdownLink('iwkoeln.de', 'test.md', PathUtility::isExternalUrl('iwkoeln.de'));
         $this->assertTrue($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('/var/image.jpg', PathUtility::isExternalUrl('/var/image.jpg'), 'test.md');
+        $markdownLink = new MarkdownLink('/var/image.jpg', 'test.md', PathUtility::isExternalUrl('/var/image.jpg'));
         $this->assertFalse($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('../index.md', PathUtility::isExternalUrl('../index.md'), 'test.md');
+        $markdownLink = new MarkdownLink('../index.md', 'test.md', PathUtility::isExternalUrl('../index.md'));
         $this->assertFalse($markdownLink->isExternal);
-        $markdownLink = new MarkdownLink('index.md', PathUtility::isExternalUrl('../index.md'), 'test.md');
+        $markdownLink = new MarkdownLink('index.md', 'test.md', PathUtility::isExternalUrl('../index.md'));
         $this->assertFalse($markdownLink->isExternal);
     }
 
@@ -37,7 +37,7 @@ class MarkdownLinkTest extends AbstractTestCase
      */
     public function testMarkdownLinkAbsolutLink()
     {
-        $markdownLink = new MarkdownLink('../index.md', PathUtility::isExternalUrl('../index.md'), 'var/www/html/src/some/data/test.md');
-        $this->assertEquals($markdownLink->absolutePath(), 'var/www/html/src/some/index.md');
+        $markdownLink = new MarkdownLink('var/www/html/src/some/data/test/index.md', '../test.md', PathUtility::isExternalUrl('../test.md'));
+        $this->assertEquals('var/www/html/src/some/data/test.md', $markdownLink->absolutePath());
     }
 }

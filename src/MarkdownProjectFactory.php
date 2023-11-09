@@ -5,10 +5,11 @@ namespace Iwm\MarkdownStructure;
 use Closure;
 use DOMElement;
 use InvalidArgumentException;
+use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
 use Iwm\MarkdownStructure\Utility\PathUtility;
-use Iwm\MarkdownStructure\Validator\MarkdownProjectValidator;
+use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
 use Iwm\MarkdownStructure\Validator\ValidatorInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
@@ -60,7 +61,7 @@ class MarkdownProjectFactory
         $this->markdownParser = $parser;
 
         // Set default validator
-        $this->validators[] = new MarkdownProjectValidator();
+        $this->validators[] = new MarkdownLinksValidator();
 
         $this->documentationPath = $projectPath . $documentationPath;
         $this->documentationEntryPoint = $documentationPath . $documentationEntryPoint;
@@ -83,6 +84,8 @@ class MarkdownProjectFactory
         $this->processDocumentationMediaFiles();
 
         // TODO: Validate Output Group
+
+        // TODO: Grep validation results like OrphanValidator
 
         // TODO: Parse Output Group
 
@@ -209,23 +212,14 @@ class MarkdownProjectFactory
 
     private function extractLinks(RenderedContentInterface $parsedResult, object|string $currentFile): array
     {
-        $domCrawler = new Crawler($parsedResult->getContent());
-        $linkNodes = $domCrawler->filter('a');
+        $extractedLinks = DomLinkExtractor::extractLinks($parsedResult, (string) $currentFile);
 
-        $links = [];
-        foreach ($linkNodes as $linkNode) {
-            if ($linkNode instanceof DOMElement) {
-                $href = $linkNode->getAttribute('href');
-                $urlParts = parse_url($href);
-                if (!isset($urlParts['path']) || str_starts_with($href, 'mailto:')) {
-                    continue;
-                }
-
-                $link = new MarkdownLink($href, PathUtility::isExternalUrl($href), (string) $currentFile);
-
-                $links[] = $link;
-            }
-        }
+        $links = array_filter($extractedLinks, function ($link) {
+            // Perform any additional checks or processing here
+            // For example, you might want to skip certain links based on some criteria
+            // Return true to keep the link, or false to skip it
+            return true;
+        });
 
         return $links;
     }

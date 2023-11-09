@@ -7,12 +7,13 @@ use Iwm\MarkdownStructure\Utility\PathUtility;
 class MarkdownLink
 {
     public function __construct(
+        readonly public string $source,
         readonly public string $target,
         readonly public bool $isExternal,
-        readonly public string $source,
+        readonly public string $linkText = '',
     ){}
     public function absolutePath(): string
     {
-        return PathUtility::resolveAbsolutPath($this->source, $this->target);
+        return PathUtility::resolveAbsolutePath($this->source, $this->target);
     }
 }

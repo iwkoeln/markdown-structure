@@ -18,29 +18,32 @@ use Symfony\Component\ErrorHandler\Debug;
 Debug::enable();
 
 $basePath = getenv('BASE_PATH') ?: '/var/www/html';
-$mdProjectPath = "$basePath/tests/Fixtures/docs";
-$indexPath = "$mdProjectPath/index.md";
+$mdProjectPath = "/tests/Fixtures/docs";
+$indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
-$factory = new MarkdownProjectFactory($basePath, $url, $mdProjectPath, $indexPath);
+$factory = new MarkdownProjectFactory($basePath, $mdProjectPath, $indexPath, $url);
 
 $factory->addValidators([
-    new \Iwm\MarkdownStructure\Validator\MarkdownProjectValidator(),
+    new \Iwm\MarkdownStructure\Validator\MarkdownLinksValidator(),
     new \Iwm\MarkdownStructure\Validator\MediaFileValidator(),
+    new \Iwm\MarkdownStructure\Validator\OrphanValidator(),
 ]);
 
 $factory->addFileParsers([
     new SplitByEmptyLineParser(),
     new HeadlinesToSectionParser(),
-    new RemoveDevSectionsParser(),
+    //new RemoveDevSectionsParser(),
     new CombineTextAndImagesParser(),
     new CombineTextAndListParser(),
-    new MarkdownToHTMLParser(),
-    new ParagraphToContainerParser(),
-    new SectionsToHtmlParser()
+    //new MarkdownToHTMLParser(),
+    //new ParagraphToContainerParser(),
+    //new SectionsToHtmlParser()
 ]);
 
+
 $project = $factory->create();
+dump($factory->links);
 dump($project);
 
 //$factory->loadFilesByPath('/var/www/html/local_packages/general-editors-guide');
