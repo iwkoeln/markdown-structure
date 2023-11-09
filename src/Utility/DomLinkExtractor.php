@@ -9,9 +9,9 @@ use DOMElement;
 
 class DomLinkExtractor
 {
-    public static function extractLinks(RenderedContentInterface $parsedResult, string $sourcePath): array
+    public static function extractLinks(string $parsedResult, string $sourcePath): array
     {
-        $domCrawler = new Crawler($parsedResult->getContent());
+        $domCrawler = new Crawler($parsedResult);
         $linkNodes = $domCrawler->filter('a');
 
         $links = [];

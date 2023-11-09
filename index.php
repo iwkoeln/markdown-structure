@@ -12,6 +12,9 @@ use Iwm\MarkdownStructure\Parser\RemoveDevSectionsParser;
 use Iwm\MarkdownStructure\Parser\SectionsToHtmlParser;
 use Iwm\MarkdownStructure\Parser\SplitByEmptyLineParser;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
+use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
+use Iwm\MarkdownStructure\Validator\MediaFileValidator;
+use Iwm\MarkdownStructure\Validator\OrphanValidator;
 use League\CommonMark\Exception\CommonMarkException;
 use League\Config\Exception\ConfigurationExceptionInterface;
 use Symfony\Component\ErrorHandler\Debug;
@@ -19,7 +22,8 @@ use Symfony\Component\ErrorHandler\Debug;
 Debug::enable();
 
 $basePath = getenv('BASE_PATH') ?: '/var/www/html';
-$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
+$mdProjectPath = "/tests/Fixtures/docs";
+//$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
 $indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
@@ -31,13 +35,11 @@ $factory->addFiles(
     ]
 );
 
-$factory->addValidators([
-    new \Iwm\MarkdownStructure\Validator\MarkdownLinksValidator(),
-    new \Iwm\MarkdownStructure\Validator\MediaFileValidator(),
-    new \Iwm\MarkdownStructure\Validator\OrphanValidator(),
+$factory->registerValidators([
+    new MediaFileValidator(),
 ]);
 
-$factory->addFileParsers([
+$factory->registerParserForBeforeCreation([
     new FallbackUrlForProjectFileLinksParser(),
     new SplitByEmptyLineParser(),
     new HeadlinesToSectionParser(),
@@ -51,7 +53,6 @@ $factory->addFileParsers([
 
 
 $project = $factory->create();
-dump($factory->links);
 dump($project);
 
 //$factory->loadFilesByPath('/var/www/html/local_packages/general-editors-guide');

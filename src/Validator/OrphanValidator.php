@@ -15,7 +15,7 @@ class OrphanValidator implements ValidatorInterface
         return PathUtility::isMarkdownFile($path);
     }
 
-    public function validate(?RenderedContentInterface $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $fileList): array
     {
         if ($parsedResult === null || !$this->fileCanBeValidated($path)) {
             return [];
@@ -42,6 +42,9 @@ class OrphanValidator implements ValidatorInterface
 
         // Return the list of orphan files
         // array_values to reset keys
-        return array_values($orphanFiles); 
+        $orphans = array_values($orphanFiles);
+
+        // Make the File Path the key for the orphans array
+        return array_combine($orphans, $orphans);
     }
 }

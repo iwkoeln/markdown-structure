@@ -8,5 +8,5 @@ use League\CommonMark\Output\RenderedContentInterface;
 interface ValidatorInterface
 {
     public function fileCanBeValidated(string $path): bool;
-    public function validate(RenderedContentInterface|null $parsedResult, string $path, array $fileList): array;
+    public function validate(string|null $parsedResult, string $path, array $fileList): array;
 }

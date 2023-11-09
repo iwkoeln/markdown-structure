@@ -8,7 +8,7 @@ use League\CommonMark\Output\RenderedContentInterface;
 class MediaFileValidator implements ValidatorInterface
 {
 
-    public function validate(?RenderedContentInterface $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $fileList): array
     {
         $errors = [];
 

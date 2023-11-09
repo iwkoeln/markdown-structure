@@ -53,7 +53,7 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
 4. Customize validators and file-parser:
     ```php
     $factory->enableValidation = true;
-    $factory->addValidators([
+    $factory->registerValidators([
         new ImageValidator(),
         new LinkValidator(),
         new MarkdownValidator(),

@@ -14,6 +14,7 @@ final class MarkdownProject
         public array  $referencedExternalFiles = [],
         public ?array $projectFilesNested = null,
         public ?array $errors = null,
+        public ?array $orphans = null
     ) {}
 
     public function getFileByPath(string $path): ?MarkdownFile

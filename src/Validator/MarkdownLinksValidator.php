@@ -14,7 +14,7 @@ class MarkdownLinksValidator implements ValidatorInterface
         return PathUtility::isMarkdownFile($path);
     }
 
-    public function validate(?RenderedContentInterface $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $fileList): array
     {
         $errors = [];
 
@@ -25,14 +25,19 @@ class MarkdownLinksValidator implements ValidatorInterface
         $markdownLinks = DomLinkExtractor::extractLinks($parsedResult, $path);
 
         foreach ($markdownLinks as $markdownLink) {
-            $absolutePath = $markdownLink->absolutePath();
-            if (!in_array($absolutePath, $fileList)) {
-                $errors[] = new LinkTargetNotFoundError(
-                    $path,
-                    $absolutePath,
-                    $markdownLink->linkText
-                );
+            if (str_starts_with($markdownLink->target, '#')) {
+                continue;
+            } else {
+                $absolutePath = $markdownLink->absolutePath();
+                if (!in_array($absolutePath, $fileList)) {
+                    $errors[] = new LinkTargetNotFoundError(
+                        $path,
+                        $absolutePath,
+                        $markdownLink->linkText
+                    );
+                }
             }
+
         }
 
         return $errors;
