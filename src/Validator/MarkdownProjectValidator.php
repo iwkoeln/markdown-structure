@@ -38,11 +38,12 @@ class MarkdownProjectValidator implements ValidatorInterface
 
                     $absolutPath = PathUtility::resolveAbsolutPath($path, $urlParts['path']);
                     if (!empty($absolutPath) && !in_array($absolutPath, $fileList)) {
-                        $error = new LinkTargetNotFoundError($path, 'Link target not found');
-                        $error->setUnfoundFilePath($absolutPath);
-                        if ($linkNode->nodeValue) {
-                            $error->setLinkText($linkNode->nodeValue);
-                        }
+                        $error = new LinkTargetNotFoundError(
+                            $path,
+                            'Link target not found',
+                            $linkNode->nodeValue ?? '',
+                            $absolutPath
+                        );
                         $errors[] = $error;
                     }
                 }

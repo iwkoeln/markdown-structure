@@ -2,18 +2,17 @@
 
 namespace Iwm\MarkdownStructure\Error;
 
-class LinkTargetNotFoundError extends AbstractError
+final class LinkTargetNotFoundError extends AbstractError
 {
-    public string $linkText = '';
-    public string $pathOfUnfoundFile = '';
 
-    public function setLinkText(string $linkText): void
+    public function __construct(
+        protected string $errorSource,
+        protected string $errorMessage,
+        protected string $linkText,
+        protected string $pathOfUnfoundFile
+    )
     {
-        $this->linkText = $linkText;
-    }
-    public function setUnfoundFilePath(string $pathOfUnfoundFile): void
-    {
-        $this->pathOfUnfoundFile = $pathOfUnfoundFile;
+        parent::__construct($errorSource, $errorMessage);
     }
 
     public function getErrorMessage(): string

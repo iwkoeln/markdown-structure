@@ -2,39 +2,23 @@
 
 namespace Iwm\MarkdownStructure\Error;
 
-class AbstractError implements ErrorInterface
+abstract class AbstractError implements ErrorInterface
 {
-    protected string $errorSource;
-    protected string $errorMessage;
 
-    public function __construct(string $errorSource, string $errorMessage)
+    public function __construct(
+        protected string $errorSource,
+        protected string $errorMessage
+    )
     {
-        $this->errorSource = $errorSource;
-        $this->errorMessage = $errorMessage;
     }
 
-    public function getErrorMessage(): string
-    {
-        return $this->errorMessage;
-    }
-
-    public function setErrorMessage(string $errorMessage): void
-    {
-        $this->errorMessage = $errorMessage;
-    }
-
-    public function getErrorSource(): string
-    {
-        return $this->errorSource;
-    }
-
-    public function setErrorSource(string $errorSource): void
-    {
-        $this->errorSource = $errorSource;
-    }
+    // Implement getErrorMessage method in the abstract class if it's common for all errors
+    // Otherwise, leave it to the concrete classes to implement.
+    abstract public function getErrorMessage(): string;
 
     public function __toString(): string
     {
-        return $this->errorMessage;
+        return $this->getErrorMessage();
     }
 }
+
