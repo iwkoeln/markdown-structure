@@ -33,7 +33,6 @@ use Symfony\Component\DomCrawler\Crawler;
 class MarkdownProjectFactory
 {
     public bool $enableNestedStructure = true;
-    public bool $enableValidation = true;
 
     /** @var array|string[] All (but project) files in given repository */
     public array $files = [];
@@ -50,7 +49,6 @@ class MarkdownProjectFactory
     public ?array $errors = null;
     public Closure|null $readFileFunction = null;
     public ConverterInterface $markdownParser;
-    public ValidatorInterface $validator;
 
     /** @var array|ValidatorInterface[] */
     public array $validators = [];
@@ -167,7 +165,7 @@ class MarkdownProjectFactory
     private function performValidation(RenderedContentInterface|null $parsedResult, string $filePath): array
     {
         $errors = [];
-        if ($this->enableValidation) {
+        if (empty($this->validators) === false) {
             foreach ($this->validators as $validator) {
                 $this->errors[$filePath] = array_merge($errors, $validator->validate($parsedResult, $filePath, $this->projectFiles));
             }
