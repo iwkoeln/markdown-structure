@@ -4,6 +4,7 @@ namespace Iwm\MarkdownStructure\Parser;
 
 use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Value\Section;
+use Iwm\MarkdownStructure\Value\SectionType;
 
 class HeadlinesToSectionParser implements ParserInterface
 {
@@ -32,10 +33,9 @@ class HeadlinesToSectionParser implements ParserInterface
             if (preg_match('/^#+/', $currentLine, $matches)) {
                 $headlineLevel = strlen($matches[0]);
                 $headlineTitle = trim($currentLine, '# ');
-                $currentHeadline = new Section();
+                $currentHeadline = new Section(SectionType::HEADLINE);
                 $currentHeadline->title = $headlineTitle;
                 $currentHeadline->level = $headlineLevel;
-                $currentHeadline->type = 'headline';
                 $result[] = $currentHeadline;
             } else {
                 if ($currentHeadline === null) {

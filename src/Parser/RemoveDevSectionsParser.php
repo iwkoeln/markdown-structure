@@ -4,7 +4,7 @@ namespace Iwm\MarkdownStructure\Parser;
 
 use Iwm\MarkdownStructure\Parser\ParserInterface;
 
-class RemoveDevSections implements ParserInterface
+class RemoveDevSectionsParser implements ParserInterface
 {
 
     public function fileIsParsable(string $fileType): bool

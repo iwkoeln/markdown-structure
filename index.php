@@ -7,7 +7,7 @@ use Iwm\MarkdownStructure\Parser\CombineTextAndListParser;
 use Iwm\MarkdownStructure\Parser\HeadlinesToSectionParser;
 use Iwm\MarkdownStructure\Parser\MarkdownToHTMLParser;
 use Iwm\MarkdownStructure\Parser\ParagraphToContainerParser;
-use Iwm\MarkdownStructure\Parser\RemoveDevSections;
+use Iwm\MarkdownStructure\Parser\RemoveDevSectionsParser;
 use Iwm\MarkdownStructure\Parser\SectionsToHtmlParser;
 use Iwm\MarkdownStructure\Parser\SplitByEmptyLineParser;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
@@ -32,7 +32,7 @@ $factory->addValidators([
 $factory->addFileParsers([
     new SplitByEmptyLineParser(),
     new HeadlinesToSectionParser(),
-    new RemoveDevSections(),
+    new RemoveDevSectionsParser(),
     new CombineTextAndImagesParser(),
     new CombineTextAndListParser(),
     new MarkdownToHTMLParser(),
