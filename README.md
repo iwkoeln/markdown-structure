@@ -41,8 +41,8 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
 3. Create a new instance of the `MarkdownProjectFactory` class:
     ```php
     $rootPathOfYourProject = '/var/www/html';
-    $pathToYourDocumentation = '/var/www/html/tests/Data';
-    $pathToYouDocIndexFile = '/var/www/html/tests/Data/index.md';
+    $pathToYourDocumentation = '/Docs';
+    $pathToYouDocIndexFile = '/index.md';
     $fallbackUrl = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
     
     $factory = new MarkdownProjectFactory(
@@ -54,12 +54,7 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
     ```
 4. Customize validators and file-parser:
     ```php
-    $factory->registerValidators([
-        new ImageValidator(),
-        new LinkValidator(),
-        new MarkdownValidator(),
-    ]);
-   
+   // Will be executed when the markdown file is added to the MarkdownProjectFactory
    $factory->registerParserForAfterRegistration([
         new SplitByEmptyLineParser(),
         new HeadlinesToSectionParser(),
@@ -67,7 +62,15 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
         new CombineTextAndImagesParser(),
         new CombineTextAndListParser(),
    ]);
+   
+    // Will be executed for each markdown and media file once the create method is called
+    $factory->registerValidators([
+        new ImageValidator(),
+        new LinkValidator(),
+        new MarkdownValidator(),
+    ]);
 
+    // Will be executed after the files are validated and errors are collected but before the project is created
     $factory->registerParserForBeforeCreation([
         new MarkdownToHTMLParser(),
         new ParagraphToContainerParser(),
