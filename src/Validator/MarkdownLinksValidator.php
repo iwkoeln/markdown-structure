@@ -25,7 +25,7 @@ class MarkdownLinksValidator implements ValidatorInterface
 
         foreach ($markdownLinks as $markdownLink) {
             $absolutePath = $markdownLink->absolutePath();
-            if (!in_array($absolutePath, $markdownFiles) && !in_array($absolutePath, $mediaFiles)) {
+            if (!array_key_exists($absolutePath, $markdownFiles) && !array_key_exists($absolutePath, $mediaFiles)) {
                 $errors[] = new LinkTargetNotFoundError(
                     $path,
                     $absolutePath,

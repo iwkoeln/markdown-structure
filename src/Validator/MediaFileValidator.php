@@ -49,14 +49,14 @@ class MediaFileValidator implements ValidatorInterface
             }
 
             if (empty($lsTreeOutput)) {
-                $errors[] = new ImageDoesNotExistError($path);
+                $errors[] = new ImageDoesNotExistError($path, $path);
             } elseif ($fileInfo->isFile() && $fileInfo->getSize() > 1048576) {
                 $errors[] = new ImageTooLargeError($path, $fileInfo->getSize());
             }
         } elseif ($fileInfo->isFile() && $fileInfo->getSize() > 1048576) {
             $errors[] = new ImageTooLargeError($path, $fileInfo->getSize());
-        } elseif (!$fileInfo->isFile() || !$fileInfo->isDir()) {
-            $errors[] = new ImageDoesNotExistError($path);
+        } elseif (!$fileInfo->isFile()) {
+            $errors[] = new ImageDoesNotExistError($path, $path);
         }
 
         return $errors;
@@ -89,10 +89,10 @@ class MediaFileValidator implements ValidatorInterface
             }
 
             if (empty($lsTreeOutput)) {
-                $errors[] = new ImageDoesNotExistError($path);
+                $errors[] = new ImageDoesNotExistError($path, $path);
             }
-        } elseif (!$fileInfo->isFile() || !$fileInfo->isDir()) {
-            $errors[] = new ImageDoesNotExistError($path);
+        } elseif (!$fileInfo->isFile()) {
+            $errors[] = new ImageDoesNotExistError($path, $path);
         }
 
         return $errors;

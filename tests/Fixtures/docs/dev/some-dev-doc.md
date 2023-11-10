@@ -32,13 +32,13 @@ def hello_world():
 
 Vestibulum ullamcorper mauris at ligula. Nullam accumsan lorem in dui. Praesent porttitor, nulla vitae posuere iaculis, arcu nisl dignissim dolor, a pretium mi sem ut ipsum. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Quisque rutrum.
 
-![Image example](img/image.png)
+![Image example](../img/image.png)
 
 Vestibulum ullamcorper mauris at ligula. Nullam accumsan lorem in dui. Praesent porttitor, nulla vitae posuere iaculis, arcu nisl dignissim dolor, a pretium mi sem ut ipsum. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Quisque rutrum.
 
-![Image example](img/image.jpg)
+![Image example](../img/image.jpg)
 
-![Image example](img/image.jpg)
+![Image example](../img/image.jpg)
 
 ### Dev: Dev Section Test Level 3
 

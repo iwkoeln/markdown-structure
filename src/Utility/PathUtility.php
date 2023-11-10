@@ -198,15 +198,20 @@ class PathUtility
             return true;
         }
 
-        // Check if somewhere in the path a .git directory exists (bare repository)
-        $pathParts = explode('/', $path);
-        while (count($pathParts) > 0) {
-            $path = implode('/', $pathParts);
-            if (is_dir($path . '/.git')) {
-                return true;
-            }
-            array_pop($pathParts);
+        // Check if somewhere in the path a dir + .git directory exists (bare repository)
+        if (str_contains($path, '.git')) {
+            return true;
         }
+
+// Check if somewhere in the path a .git directory exists (bare repository)
+//        $pathParts = explode('/', $path);
+//        while (count($pathParts) > 0) {
+//            $path = implode('/', $pathParts);
+//            if (is_dir($path . '/.git')) {
+//                return true;
+//            }
+//            array_pop($pathParts);
+//        }
 
         // Check if the directory is a bare repository by looking for common Git repository files
         $gitFiles = ['config', 'objects', 'refs', 'HEAD'];
