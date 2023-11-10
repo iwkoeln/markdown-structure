@@ -3,7 +3,7 @@
 namespace Iwm\MarkdownStructure\Validator;
 
 use Iwm\MarkdownStructure\Error\ImageDoesNotExistError;
-use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
+use SplFileInfo;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Symfony\Component\DomCrawler\Crawler;
 use DOMElement;
@@ -15,7 +15,7 @@ class MarkdownImageValidator implements ValidatorInterface
         return PathUtility::isMarkdownFile($path);
     }
 
-    public function validate(?string $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $markdownFiles, array $mediaFiles): array
     {
         $errors = [];
 
@@ -31,9 +31,8 @@ class MarkdownImageValidator implements ValidatorInterface
                 $src = $imageNode->getAttribute('src');
 
                 if (!empty($src)) {
-                    $absolutePath = PathUtility::resolveRelativePath($path, $src);
-
-                    if (!in_array($absolutePath, $fileList)) {
+                    $absolutePath = PathUtility::resolveAbsolutePath($path, $src);
+                    if (!array_key_exists($absolutePath, $mediaFiles)) {
                         $errors[] = new ImageDoesNotExistError(
                             $path,
                             $src,

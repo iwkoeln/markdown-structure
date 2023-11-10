@@ -6,6 +6,7 @@ namespace Iwm\MarkdownStructure\Utility;
 
 use SplFileInfo;
 use Symfony\Component\Process\Process;
+use function PHPUnit\Framework\stringContains;
 
 class PathUtility
 {
@@ -197,6 +198,16 @@ class PathUtility
             return true;
         }
 
+        // Check if somewhere in the path a .git directory exists (bare repository)
+        $pathParts = explode('/', $path);
+        while (count($pathParts) > 0) {
+            $path = implode('/', $pathParts);
+            if (is_dir($path . '/.git')) {
+                return true;
+            }
+            array_pop($pathParts);
+        }
+
         // Check if the directory is a bare repository by looking for common Git repository files
         $gitFiles = ['config', 'objects', 'refs', 'HEAD'];
         foreach ($gitFiles as $gitFile) {
@@ -206,5 +217,17 @@ class PathUtility
         }
 
         return true;
+    }
+
+    public static function getGitRepositoryPath(string $path): string
+    {
+        $position = strpos($path, '.git');
+
+        if ($position !== false) {
+            return substr($path, 0, $position + 4); // +4 to include ".git"
+        }
+
+        // If ".git" is not found in the path, return the original path.
+        return $path;
     }
 }

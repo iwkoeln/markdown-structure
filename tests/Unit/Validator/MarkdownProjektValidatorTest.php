@@ -3,12 +3,10 @@
 namespace Iwm\MarkdownStructure\Tests\Unit\Validator;
 
 use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
-use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use PHPUnit\Framework\TestCase;
 
 class MarkdownProjektValidatorTest extends AbstractTestCase
 {
@@ -36,7 +34,7 @@ class MarkdownProjektValidatorTest extends AbstractTestCase
     {
         $this->assertEquals(
             [],
-            (new MarkdownLinksValidator())->validate(null, $this->workspacePath . '/docs-with-errors/img/non-image.txt', [])
+            (new MarkdownLinksValidator())->validate(null, $this->workspacePath . '/docs-with-errors/img/non-image.txt', [], [])
         );
 
         $markdown = '[An error](cause-error.md)';
@@ -57,6 +55,7 @@ class MarkdownProjektValidatorTest extends AbstractTestCase
             (new MarkdownLinksValidator())->validate(
                 $html,
                 $this->workspacePath . '/docs-with-errors/index.md',
+                [],
                 []
             )
         );

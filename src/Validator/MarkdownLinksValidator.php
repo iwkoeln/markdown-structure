@@ -13,7 +13,7 @@ class MarkdownLinksValidator implements ValidatorInterface
         return PathUtility::isMarkdownFile($path);
     }
 
-    public function validate(?string $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $markdownFiles, array $mediaFiles): array
     {
         $errors = [];
 
@@ -25,7 +25,7 @@ class MarkdownLinksValidator implements ValidatorInterface
 
         foreach ($markdownLinks as $markdownLink) {
             $absolutePath = $markdownLink->absolutePath();
-            if (!in_array($absolutePath, $fileList)) {
+            if (!in_array($absolutePath, $markdownFiles) && !in_array($absolutePath, $mediaFiles)) {
                 $errors[] = new LinkTargetNotFoundError(
                     $path,
                     $absolutePath,

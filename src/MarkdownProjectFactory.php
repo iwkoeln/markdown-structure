@@ -140,7 +140,9 @@ class MarkdownProjectFactory
         }
 
         $orphanValidator = $this->validators->getItem(OrphanValidator::class);
-        $this->orphans = $orphanValidator->getOrphanFiles($this->documentationFiles);
+        if ($orphanValidator instanceof OrphanValidator) {
+            $this->orphans = $orphanValidator->getOrphanFiles($this->documentationFiles);
+        }
     }
 
     private function processDocumentationMediaFiles(): void
@@ -180,7 +182,7 @@ class MarkdownProjectFactory
         foreach ($this->validators->getItems() as $validator) {
 
             // Get errors from the current validator
-            $validatorErrors = $validator->validate($parsedResult, $filePath, $this->documentationFiles);
+            $validatorErrors = $validator->validate($parsedResult, $filePath, $this->documentationFiles, $this->documentationMediaFiles);
             if (!empty($validatorErrors)) {
 
                 // Initialize the errors array for the current file if not already set

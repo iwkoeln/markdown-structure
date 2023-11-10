@@ -14,7 +14,7 @@ class OrphanValidator implements ValidatorInterface
         return PathUtility::isMarkdownFile($path);
     }
 
-    public function validate(?string $parsedResult, string $path, array $fileList): array
+    public function validate(?string $parsedResult, string $path, array $markdownFiles, array $mediaFiles): array
     {
         if ($parsedResult === null || !$this->fileCanBeValidated($path)) {
             return [];
