@@ -13,18 +13,18 @@ class PathUtilityTest extends AbstractTestCase
     {
         parent::setUp();
 
-        mkdir($this->workspacePath . '/docs', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs', 0777, true);
 
-        copy(__DIR__ . '/../../Fixtures/docs/index.md', $this->workspacePath . '/docs/index.md');
+        copy(__DIR__ . '/../../Fixtures/docs/index.md', $this->getBasePath() . $this->workspacePath . '/docs/index.md');
 
-        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->workspacePath . '/docs/img/image.jpg');
-        copy(__DIR__ . '/../../Fixtures/docs/img/image.png', $this->workspacePath . '/docs/img/image.png');
-        copy(__DIR__ . '/../../Fixtures/docs/img/example.gif', $this->workspacePath . '/docs/img/example.gif');
-        copy(__DIR__ . '/../../Fixtures/docs/img/example.svg', $this->workspacePath . '/docs/img/example.svg');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.png', $this->getBasePath() . $this->workspacePath . '/docs/img/image.png');
+        copy(__DIR__ . '/../../Fixtures/docs/img/example.gif', $this->getBasePath() . $this->workspacePath . '/docs/img/example.gif');
+        copy(__DIR__ . '/../../Fixtures/docs/img/example.svg', $this->getBasePath() . $this->workspacePath . '/docs/img/example.svg');
 
 
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/image-not-in-img.png', $this->workspacePath . '/docs-with-errors/image-not-in-img.png');
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->workspacePath . '/docs-with-errors/img/non-image.txt');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/image-not-in-img.png', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/image-not-in-img.png');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt');
     }
     /**
      * @test
@@ -32,7 +32,7 @@ class PathUtilityTest extends AbstractTestCase
      */
     public function testMakeDirectory(): void
     {
-        $tempDir = $this->workspacePath . '/temp';
+        $tempDir = $this->getBasePath() . $this->workspacePath . '/temp';
         PathUtility::mkdir($tempDir);
 
         $this->assertDirectoryExists($tempDir);
@@ -46,13 +46,13 @@ class PathUtilityTest extends AbstractTestCase
      */
     public function testDirectoryName(): void
     {
-        $fileName = $this->workspacePath . '/docs/index.md';
-        $expectedDirName = $this->workspacePath . '/docs';
+        $fileName = $this->getBasePath() . $this->workspacePath . '/docs/index.md';
+        $expectedDirName = $this->getBasePath() . $this->workspacePath . '/docs';
 
         $dirName = PathUtility::dirname($fileName);
         $this->assertEquals($expectedDirName, $dirName);
 
-        $expectedDirName = $this->workspacePath;
+        $expectedDirName = $this->getBasePath() . $this->workspacePath;
         $dirName = PathUtility::dirname($fileName, 2);
         $this->assertEquals($expectedDirName, $dirName);
 
@@ -71,16 +71,16 @@ class PathUtilityTest extends AbstractTestCase
     public function testIsMediaFile(): void
     {
         // Test for media file extensions
-        $this->assertTrue(PathUtility::isMediaFile($this->workspacePath . '/docs/img/image.jpg'));
-        $this->assertTrue(PathUtility::isMediaFile($this->workspacePath . '/docs/img/image.png'));
+        $this->assertTrue(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg'));
+        $this->assertTrue(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs/img/image.png'));
 
         // Test for directory names 'img' and 'image'
-        $this->assertFalse(PathUtility::isMediaFile($this->workspacePath . '/docs-with-errors/image-not-in-img.png'));
-        $this->assertFalse(PathUtility::isMediaFile($this->workspacePath . '/docs-with-errors/img/non-image.txt'));
+        $this->assertFalse(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs-with-errors/image-not-in-img.png'));
+        $this->assertFalse(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt'));
 
         // Test for non-media file extensions
-        $this->assertFalse(PathUtility::isMediaFile($this->workspacePath . '/docs'));
-        $this->assertFalse(PathUtility::isMediaFile($this->workspacePath . '/docs/index.md'));
+        $this->assertFalse(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs'));
+        $this->assertFalse(PathUtility::isMediaFile($this->getBasePath() . $this->workspacePath . '/docs/index.md'));
     }
 
     /**
@@ -90,14 +90,14 @@ class PathUtilityTest extends AbstractTestCase
     public function testGuessMimeTypeFromPath(): void
     {
         // Test for image file extensions
-        $this->assertSame('image/jpg', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs/img/image.jpg'));
-        $this->assertSame('image/png', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs/img/image.png'));
-        $this->assertSame('image/gif', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs/img/example.gif'));
-        $this->assertSame('image/svg', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs/img/example.svg'));
+        $this->assertSame('image/jpg', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg'));
+        $this->assertSame('image/png', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs/img/image.png'));
+        $this->assertSame('image/gif', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs/img/example.gif'));
+        $this->assertSame('image/svg', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs/img/example.svg'));
 
         // Test for non-image file extensions
-        $this->assertSame('application/octet-stream', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs/index.md'));
-        $this->assertSame('application/octet-stream', PathUtility::guessMimeTypeFromPath($this->workspacePath . '/docs-with-errors/img/non-image.txt'));
+        $this->assertSame('application/octet-stream', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs/index.md'));
+        $this->assertSame('application/octet-stream', PathUtility::guessMimeTypeFromPath($this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt'));
     }
 
     /**
@@ -109,8 +109,8 @@ class PathUtilityTest extends AbstractTestCase
         $this->assertTrue(PathUtility::isExternalUrl('https://www.google.com'));
         $this->assertTrue(PathUtility::isExternalUrl('http://www.google.com'));
         $this->assertTrue(PathUtility::isExternalUrl('mailto:mai@iwkoeln.de'));
-        $this->assertFalse(PathUtility::isExternalUrl($this->workspacePath . '/docs/img/image.jpg'));
-        $this->assertFalse(PathUtility::isExternalUrl($this->workspacePath . '/docs/index.md'));
+        $this->assertFalse(PathUtility::isExternalUrl($this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg'));
+        $this->assertFalse(PathUtility::isExternalUrl($this->getBasePath() . $this->workspacePath . '/docs/index.md'));
     }
 
     /**

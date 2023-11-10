@@ -14,7 +14,7 @@ abstract class AbstractTestCase extends TestCase
      * @var string On this location (relativ to current working dir) the given files and
      *             .markdown-structure are created during set up.
      */
-    protected $workspacePath = '.build/.cache/current_test';
+    protected $workspacePath = '/.build/.cache/current_test';
 
     /**
      * @var string .markdown-structure content
@@ -26,6 +26,10 @@ abstract class AbstractTestCase extends TestCase
      */
     protected $files = [];
 
+    public function getBasePath(): string
+    {
+       return getenv('BASE_PATH') ?: '/var/www/html';
+    }
 
     public function setUp(): void
     {
