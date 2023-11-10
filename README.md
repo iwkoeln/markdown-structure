@@ -6,6 +6,8 @@
 
 The iwm/markdown-structure is a PHP library that scans a specific folder for documentation files in Markdown format (MD) and provides their structure. It also includes functionality to parse the Markdown files and validate references (links to other files/images) contained within them. The generated documentation can be published on Bitbucket.
 
+[//]: # (TODO: Update Readme)
+
 ## Features
 
 - Finder class that collects all project files and adds them to the ProjectFiles using the `setFiles` method.
@@ -52,19 +54,21 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
     ```
 4. Customize validators and file-parser:
     ```php
-    $factory->enableValidation = true;
     $factory->registerValidators([
         new ImageValidator(),
         new LinkValidator(),
         new MarkdownValidator(),
     ]);
-
-    $factory->addFileParsers([
+   
+   $factory->registerParserForAfterRegistration([
         new SplitByEmptyLineParser(),
         new HeadlinesToSectionParser(),
         new RemoveDevSections(),
         new CombineTextAndImagesParser(),
         new CombineTextAndListParser(),
+   ]);
+
+    $factory->registerParserForBeforeCreation([
         new MarkdownToHTMLParser(),
         new ParagraphToContainerParser(),
         new SectionsToHtmlParser()

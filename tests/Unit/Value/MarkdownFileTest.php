@@ -26,7 +26,7 @@ class MarkdownFileTest extends AbstractTestCase
         $markdown = '';
         $html = '';
 
-        $markdownFile = new MarkdownFile($path, $markdown, $html);
+        $markdownFile = new MarkdownFile($this->workspacePath, $path, $markdown, $html);
         $this->assertEquals($path, (string) $markdownFile);
     }
 }

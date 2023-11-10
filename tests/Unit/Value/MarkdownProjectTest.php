@@ -45,13 +45,13 @@ class MarkdownProjectTest extends AbstractTestCase
         $rootPath = $this->workspacePath;
         $projectFiles = [
             $this->workspacePath . '/docs/index.md' =>
-                new MarkdownFile($this->workspacePath . '/docs/index.md', '', ''),
+                new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/index.md', '', ''),
             $this->workspacePath . '/docs/features/another-feature.md' =>
-                new MarkdownFile($this->workspacePath . '/docs/features/another-feature.md', '', ''),
+                new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/features/another-feature.md', '', ''),
             $this->workspacePath . '/docs/features/feature.md' =>
-                new MarkdownFile($this->workspacePath . '/docs/features/feature.md', '', ''),
+                new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/features/feature.md', '', ''),
             $this->workspacePath . '/docs/dev/some-dev-doc.md' =>
-                new MarkdownFile($this->workspacePath . '/docs/dev/some-dev-doc.md', '', ''),
+                new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/dev/some-dev-doc.md', '', ''),
         ];
         $projectMediaFiles = [
             $this->workspacePath . '/docs/features/img/image.png' =>

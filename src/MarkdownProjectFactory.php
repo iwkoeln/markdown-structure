@@ -8,13 +8,16 @@ use InvalidArgumentException;
 use Iwm\MarkdownStructure\Collection\AfterRegistrationParserCollection;
 use Iwm\MarkdownStructure\Collection\BeforeCreationParserCollection;
 use Iwm\MarkdownStructure\Collection\ValidatorCollection;
+use Iwm\MarkdownStructure\Parser\FallbackUrlForProjectFileLinksParser;
 use Iwm\MarkdownStructure\Parser\MarkdownToHtmlParser;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
 use Iwm\MarkdownStructure\Utility\GitFilesFinder;
 use Iwm\MarkdownStructure\Utility\PathUtility;
+use Iwm\MarkdownStructure\Validator\MarkdownImageValidator;
 use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
+use Iwm\MarkdownStructure\Validator\MediaFileValidator;
 use Iwm\MarkdownStructure\Validator\OrphanValidator;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
@@ -78,9 +81,12 @@ class MarkdownProjectFactory
 
         // Set default markdownParser
         $this->afterRegistrationParsers->add(new MarkdownToHtmlParser());
+        $this->beforeCreationParsers->add(new FallbackUrlForProjectFileLinksParser());
 
         // Set default validator
         $this->validators->add(new MarkdownLinksValidator());
+        $this->validators->add(new MarkdownImageValidator());
+        $this->validators->add(new MediaFileValidator());
         $this->validators->add(new OrphanValidator());
 
         // Load files in the documentation path
@@ -244,6 +250,7 @@ class MarkdownProjectFactory
         $markdownContent = $this->readFile($filePath);
 
         $newMarkdownFile = new MarkdownFile(
+            $this->projectPath,
             $filePath,
             $markdownContent,
             '',

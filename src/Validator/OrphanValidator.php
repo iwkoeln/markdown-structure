@@ -4,7 +4,6 @@ namespace Iwm\MarkdownStructure\Validator;
 
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\PathUtility;
-use League\CommonMark\Output\RenderedContentInterface;
 
 class OrphanValidator implements ValidatorInterface
 {

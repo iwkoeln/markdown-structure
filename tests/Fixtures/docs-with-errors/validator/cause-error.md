@@ -6,6 +6,4 @@
 
 [Schreib mir](mailto:test@domain.com)
 
-[//]: # (TODO: Implement image validator)
-
 ![This image does not exist](../img/does-not-exist.jpg)

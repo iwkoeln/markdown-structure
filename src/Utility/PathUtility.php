@@ -147,7 +147,7 @@ class PathUtility
         $baseParts = explode(DIRECTORY_SEPARATOR, rtrim($basePath, DIRECTORY_SEPARATOR));
         $absoluteParts = explode(DIRECTORY_SEPARATOR, rtrim($absolutePath, DIRECTORY_SEPARATOR));
 
-        // TODO Find out why this is needed
+        // TODO: Find out why this is needed
         //if (isset($baseParts[0]) && empty($baseParts[0])) {
         //    return $absolutePath;
         //}

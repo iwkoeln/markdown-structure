@@ -21,7 +21,7 @@ class DomLinkExtractor
                 $isExternal = PathUtility::isExternalUrl($href);
                 $linkText = $linkNode->textContent ?? '';
 
-                if (!$isExternal) {
+                if (!$isExternal && !str_starts_with($href, '#')) {
                     $links[] = new MarkdownLink($sourcePath, $href, false, $linkText);
                 }
             }
