@@ -2,14 +2,15 @@
 
 namespace Iwm\MarkdownStructure;
 
-use Closure;
-use DOMElement;
 use InvalidArgumentException;
-use Iwm\MarkdownStructure\Collection\AfterRegistrationParserCollection;
-use Iwm\MarkdownStructure\Collection\BeforeCreationParserCollection;
+use Iwm\MarkdownStructure\Collection\FinisherCollection;
+use Iwm\MarkdownStructure\Collection\ParserCollection;
 use Iwm\MarkdownStructure\Collection\ValidatorCollection;
-use Iwm\MarkdownStructure\Parser\FallbackUrlForProjectFileLinksParser;
+use Iwm\MarkdownStructure\Error\ErrorInterface;
+use Iwm\MarkdownStructure\Finisher\FallbackUrlForProjectFileLinksFinisher;
+use Iwm\MarkdownStructure\Finisher\FinisherInterface;
 use Iwm\MarkdownStructure\Parser\MarkdownToHtmlParser;
+use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
@@ -19,13 +20,10 @@ use Iwm\MarkdownStructure\Validator\MarkdownImageValidator;
 use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
 use Iwm\MarkdownStructure\Validator\MediaFileValidator;
 use Iwm\MarkdownStructure\Validator\OrphanValidator;
+use Iwm\MarkdownStructure\Validator\ValidatorInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MediaFile;
-use League\CommonMark\ConverterInterface;
-use League\CommonMark\Exception\CommonMarkException;
-use League\CommonMark\Output\RenderedContentInterface;
-use League\Config\Exception\ConfigurationExceptionInterface;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -59,8 +57,8 @@ class MarkdownProjectFactory
 
     // Utilities and Collections
     public ?ValidatorCollection $validators = null;
-    private ?AfterRegistrationParserCollection $afterRegistrationParsers = null;
-    private ?BeforeCreationParserCollection $beforeCreationParsers = null;
+    private ?ParserCollection $parser = null;
+    private ?FinisherCollection $finisher = null;
 
     public function __construct(
         string                  $projectRootPath,
@@ -78,17 +76,15 @@ class MarkdownProjectFactory
 
         $this->absoluteDocumentationPath = $this->projectRootPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
 
-//        $this->documentationPath = $projectPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
-//        $this->documentationIndexFile = $this->documentationPath . DIRECTORY_SEPARATOR . ltrim($documentationIndexFile, DIRECTORY_SEPARATOR);
         $this->fallbackBaseUrl = $fallbackBaseUrl;
 
         // Init Collections
+        $this->parser = new ParserCollection();
         $this->validators = new ValidatorCollection();
-        $this->afterRegistrationParsers = new AfterRegistrationParserCollection();
-        $this->beforeCreationParsers = new BeforeCreationParserCollection();
+        $this->finisher = new FinisherCollection();
 
-        // Set default markdownParser
-        $this->afterRegistrationParsers->add(new MarkdownToHtmlParser());
+        // Set default parser
+        $this->parser->add(new MarkdownToHtmlParser());
 
         // Set default validator
         $this->validators->add(new MarkdownLinksValidator());
@@ -96,7 +92,8 @@ class MarkdownProjectFactory
         $this->validators->add(new MediaFileValidator());
         $this->validators->add(new OrphanValidator());
 
-        $this->beforeCreationParsers->add(new FallbackUrlForProjectFileLinksParser());
+        // Set default finisher
+        $this->finisher->add(new FallbackUrlForProjectFileLinksFinisher());
     }
 
     public function create(): MarkdownProject
@@ -107,6 +104,7 @@ class MarkdownProjectFactory
 
         $this->processDocumentationFiles();
         $this->processDocumentationMediaFiles();
+        //TODO: VALIDATE PROJECT
 
         return new MarkdownProject(
             $this->projectRootPath,
@@ -137,8 +135,7 @@ class MarkdownProjectFactory
                 $documentationFile->errors = $errors;
             }
 
-            $this->parseFileBeforeCreation($documentationFile);
-
+            $this->finishFile($documentationFile);
 
             if ($this->enableNestedStructure) {
                 $this->setValueFromNestedReferencesArray($this->nestedDocumentationFiles, $documentationFile, $documentationFile);
@@ -169,24 +166,26 @@ class MarkdownProjectFactory
         }
     }
 
-    public function parseFileAfterRegistrationFile(MarkdownFile $markdownFile): void
+    public function parseFile(MarkdownFile $markdownFile): void
     {
-        foreach ($this->afterRegistrationParsers->getItems() as $parser) {
+        /** @var ParserInterface $parser */
+        foreach ($this->parser->getItems() as $parser) {
             $parser->parse($markdownFile, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
         }
     }
 
-    public function parseFileBeforeCreation(MarkdownFile $markdownFile): void
+    public function finishFile(MarkdownFile $markdownFile): void
     {
-        foreach ($this->beforeCreationParsers->getItems() as $parser) {
-            $parser->parse($markdownFile, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
+        /** @var FinisherInterface $finisher */
+        foreach ($this->finisher->getItems() as $finisher) {
+            $finisher->finish($markdownFile, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
         }
     }
 
     private function performValidation(string|null $parsedResult, string $filePath): array
     {
+        /** @var ValidatorInterface $validator */
         foreach ($this->validators->getItems() as $validator) {
-
             // Get errors from the current validator
             $validatorErrors = $validator->validate($parsedResult, $filePath, $this->documentationFiles, $this->documentationMediaFiles);
             if (!empty($validatorErrors)) {
@@ -196,6 +195,7 @@ class MarkdownProjectFactory
                     $this->errors[$filePath] = [];
                 }
 
+                /** @var ErrorInterface $error */
                 foreach ($validatorErrors as $error) {
                     // Assuming getErrorMessage() returns a string that can be used as a unique key
                     $errorKey = $error->getErrorMessage();
@@ -270,7 +270,7 @@ class MarkdownProjectFactory
             []
         );
 
-        $this->parseFileAfterRegistrationFile($newMarkdownFile);
+        $this->parseFile($newMarkdownFile);
 
         return $newMarkdownFile;
     }
@@ -341,22 +341,25 @@ class MarkdownProjectFactory
 
     public function registerValidators(array $validators): void
     {
+        /** @var ValidatorInterface $validator */
         foreach ($validators as $validator) {
             $this->validators->add($validator);
         }
     }
 
-    public function registerParserForAfterRegistration(array $parsers): void
+    public function registerParser(array $parsers): void
     {
+        /** @var ParserInterface $parser */
         foreach ($parsers as $parser) {
-            $this->afterRegistrationParsers->add($parser);
+            $this->parser->add($parser);
         }
     }
 
-    public function registerParserForBeforeCreation(array $parsers): void
+    public function registerFinisher(array $finishers): void
     {
-        foreach ($parsers as $parser) {
-            $this->beforeCreationParsers->add($parser);
+        /** @var FinisherInterface $finsiher */
+        foreach ($finishers as $finsiher) {
+            $this->finisher->add($finsiher);
         }
     }
 

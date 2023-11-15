@@ -1,20 +1,21 @@
 <?php
 
-namespace Iwm\MarkdownStructure\Parser;
+namespace Iwm\MarkdownStructure\Finisher;
 
+use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
 
-class FallbackUrlForProjectFileLinksParser implements ParserInterface
+class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
 {
     /*
      * @param MarkdownFile $file
      */
-    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
+    public function finish(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
     {
-        if (!$this->fileIsParsable(get_class($file)) || $documentationFiles === null || $projectFiles === null || $file->fallbackUrl === null) {
+        if (!$this->fileCanBeFinished(get_class($file)) || $documentationFiles === null || $projectFiles === null || $file->fallbackUrl === null) {
             return $file;
         }
         if ($file instanceof MarkdownFile) {
@@ -33,7 +34,7 @@ class FallbackUrlForProjectFileLinksParser implements ParserInterface
         return $file;
     }
 
-    public function fileIsParsable(string $fileType): bool
+    public function fileCanBeFinished(string $fileType): bool
     {
         return $fileType === 'Iwm\MarkdownStructure\Value\MarkdownFile';
     }

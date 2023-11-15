@@ -71,7 +71,7 @@ To use the `markdown-structure` library in your PHP project, follow these steps:
     ]);
 
     // Will be executed after the files are validated and errors are collected but before the project is created
-    $factory->registerParserForBeforeCreation([
+    $factory->registerFinisher([
         new MarkdownToHTMLParser(),
         new ParagraphToContainerParser(),
         new SectionsToHtmlParser()

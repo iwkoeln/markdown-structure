@@ -4,27 +4,17 @@ require_once 'vendor/autoload.php';
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
 use Iwm\MarkdownStructure\Parser\CombineTextAndImagesParser;
 use Iwm\MarkdownStructure\Parser\CombineTextAndListParser;
-use Iwm\MarkdownStructure\Parser\FallbackUrlForProjectFileLinksParser;
 use Iwm\MarkdownStructure\Parser\HeadlinesToSectionParser;
-use Iwm\MarkdownStructure\Parser\MarkdownToHTMLParser;
-use Iwm\MarkdownStructure\Parser\ParagraphToContainerParser;
-use Iwm\MarkdownStructure\Parser\RemoveDevSectionsParser;
-use Iwm\MarkdownStructure\Parser\SectionsToHtmlParser;
 use Iwm\MarkdownStructure\Parser\SplitByEmptyLineParser;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
-use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
-use Iwm\MarkdownStructure\Validator\MediaFileValidator;
-use Iwm\MarkdownStructure\Validator\OrphanValidator;
-use League\CommonMark\Exception\CommonMarkException;
-use League\Config\Exception\ConfigurationExceptionInterface;
 use Symfony\Component\ErrorHandler\Debug;
 
 Debug::enable();
 
 $projectRootPath = getenv('BASE_PATH') ?: '/var/www/html';
 $mdProjectPath = "/tests/Fixtures/docs";
-$mdProjectPath = "/tests/Fixtures/docs-with-errors";
-$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
+//$mdProjectPath = "/tests/Fixtures/docs-with-errors";
+//$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
 $indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
@@ -40,7 +30,7 @@ $factory = new MarkdownProjectFactory($projectRootPath, $mdProjectPath, $indexPa
 //    ]
 //);
 
-$factory->registerParserForAfterRegistration([
+$factory->registerParser([
     new SplitByEmptyLineParser(),
     new HeadlinesToSectionParser(),
 //    new RemoveDevSectionsParser(),
@@ -52,7 +42,7 @@ $factory->registerValidators([
 //    new MediaFileValidator(),
 ]);
 
-$factory->registerParserForBeforeCreation([
+$factory->registerFinisher([
 //    new ParagraphToContainerParser(),
 //    new SectionsToHtmlParser()
 ]);
