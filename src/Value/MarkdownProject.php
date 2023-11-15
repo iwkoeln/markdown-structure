@@ -5,16 +5,16 @@ namespace Iwm\MarkdownStructure\Value;
 final class MarkdownProject
 {
     public function __construct(
-        public string $projectPath,
-        public string $documentationPath,
-        public string $documentationEntryPoint,
-        public array  $documentationFiles,
-        public array  $documentationMediaFiles,
-        public array  $projectFiles = [],
-        public array  $referencedExternalFiles = [],
-        public ?array $projectFilesNested = null,
-        public ?array $errors = null,
-        public ?array $orphans = null
+        public readonly string $projectPath,
+        public readonly string $documentationPath,
+        public readonly string $documentationEntryPoint,
+        public readonly array  $documentationFiles,
+        public readonly array  $documentationMediaFiles,
+        public readonly array  $projectFiles = [],
+        public readonly array  $referencedExternalFiles = [],
+        public readonly ?array $projectFilesNested = null,
+        public readonly ?array $errors = null,
+        public readonly ?array $orphans = null
     ) {}
 
     public function getFileByPath(string $path): ?MarkdownFile

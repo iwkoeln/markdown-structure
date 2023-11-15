@@ -9,21 +9,21 @@ class FilesFinder
     /**
      * Find files by path.
      */
-    public static function findFilesByPath(string $path): array
+    public static function findFilesByPath(string $absolutePath): Finder
     {
-        if (!is_dir($path)) {
-            throw new \InvalidArgumentException('Invalid directory path: ' . $path);
+        if (!is_dir($absolutePath)) {
+            throw new \InvalidArgumentException('Invalid directory path: ' . $absolutePath);
         }
 
         $finder = new Finder();
-        $finder->files()->in($path);
-
-        $files = [];
-        foreach ($finder as $file) {
-            $files[] = $file->getRealPath();
-        }
-
-        sort($files);
-        return $files;
+        return $finder->files()->in($absolutePath);
+//
+//        $files = [];
+//        foreach ($finder as $file) {
+//            $files[] = $file->getRealPath();
+//        }
+//
+//        sort($files);
+//        return $files;
     }
 }

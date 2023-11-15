@@ -21,24 +21,24 @@ use Symfony\Component\ErrorHandler\Debug;
 
 Debug::enable();
 
-$basePath = getenv('BASE_PATH') ?: '/var/www/html';
+$projectRootPath = getenv('BASE_PATH') ?: '/var/www/html';
 $mdProjectPath = "/tests/Fixtures/docs";
 $mdProjectPath = "/tests/Fixtures/docs-with-errors";
 $mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
 $indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 
-$factory = new MarkdownProjectFactory($basePath, $mdProjectPath, $indexPath, $url);
+$factory = new MarkdownProjectFactory($projectRootPath, $mdProjectPath, $indexPath, $url);
+
+//$factory->addFile('docs/index.md');
+//$factory->addFile('docs/feature/baum/index.md');
+//$factory->addFile('/var/www/html/docs/feature/baum/kuchen.md');
 
 //$factory->addFiles(
 //    [
 //        $basePath . '/tests/Fixtures/some-code-file.yml',
 //    ]
 //);
-
-$factory->registerValidators([
-//    new MediaFileValidator(),
-]);
 
 $factory->registerParserForAfterRegistration([
     new SplitByEmptyLineParser(),
@@ -48,12 +48,16 @@ $factory->registerParserForAfterRegistration([
     new CombineTextAndListParser(),
 ]);
 
+$factory->registerValidators([
+//    new MediaFileValidator(),
+]);
+
 $factory->registerParserForBeforeCreation([
-//    new MarkdownToHTMLParser(),
 //    new ParagraphToContainerParser(),
 //    new SectionsToHtmlParser()
 ]);
 
+$factory->addFiles(FilesFinder::findFilesByPath($factory->absoluteDocumentationPath));
 
 $project = $factory->create();
 dump($project);

@@ -27,14 +27,16 @@ use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\Config\Exception\ConfigurationExceptionInterface;
 use SplFileInfo;
+use Symfony\Component\Finder\Finder;
 
 class MarkdownProjectFactory
 {
     // Configuration
     public bool $enableNestedStructure = true;
-    private string $projectPath;
-    private string $documentationPath;
-    private string $documentationEntryPoint;
+    private string $projectRootPath;
+//    public readonly string $documentationPath;
+//    private string $documentationIndexFile;
+    public readonly string $absoluteDocumentationPath;
     private ?string $fallbackBaseUrl;
 
     // Files
@@ -59,19 +61,25 @@ class MarkdownProjectFactory
     public ?ValidatorCollection $validators = null;
     private ?AfterRegistrationParserCollection $afterRegistrationParsers = null;
     private ?BeforeCreationParserCollection $beforeCreationParsers = null;
-    public ConverterInterface $markdownParser;
 
     public function __construct(
-        string $projectPath,
-        string $documentationPath = '/docs',
-        string $documentationEntryPoint = '/index.md',
-        ?string $fallbackBaseUrl = null,
+        string                  $projectRootPath,
+        readonly private string $documentationPath = '/docs',
+        readonly private string $documentationIndexFile = '/index.md',
+        ?string                 $fallbackBaseUrl = null,
     )
     {
         // Set paths
-        $this->projectPath = $projectPath;
-        $this->documentationPath = $projectPath . $documentationPath;
-        $this->documentationEntryPoint = $this->documentationPath . $documentationEntryPoint;
+        $this->projectRootPath = rtrim(realpath($projectRootPath), DIRECTORY_SEPARATOR);
+        // Check if the directory exists
+        if (!is_dir($this->projectRootPath)) {
+            throw new InvalidArgumentException(sprintf('Given project root path "%s" does not exist.', $this->projectRootPath));
+        }
+
+        $this->absoluteDocumentationPath = $this->projectRootPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
+
+//        $this->documentationPath = $projectPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
+//        $this->documentationIndexFile = $this->documentationPath . DIRECTORY_SEPARATOR . ltrim($documentationIndexFile, DIRECTORY_SEPARATOR);
         $this->fallbackBaseUrl = $fallbackBaseUrl;
 
         // Init Collections
@@ -81,7 +89,6 @@ class MarkdownProjectFactory
 
         // Set default markdownParser
         $this->afterRegistrationParsers->add(new MarkdownToHtmlParser());
-        $this->beforeCreationParsers->add(new FallbackUrlForProjectFileLinksParser());
 
         // Set default validator
         $this->validators->add(new MarkdownLinksValidator());
@@ -89,8 +96,7 @@ class MarkdownProjectFactory
         $this->validators->add(new MediaFileValidator());
         $this->validators->add(new OrphanValidator());
 
-        // Load files in the documentation path
-        $this->loadFilesByPath($this->documentationPath);
+        $this->beforeCreationParsers->add(new FallbackUrlForProjectFileLinksParser());
     }
 
     public function create(): MarkdownProject
@@ -103,9 +109,9 @@ class MarkdownProjectFactory
         $this->processDocumentationMediaFiles();
 
         return new MarkdownProject(
-            $this->projectPath,
+            $this->projectRootPath,
             $this->documentationPath,
-            $this->documentationEntryPoint,
+            $this->documentationIndexFile,
             $this->documentationFiles,
             $this->documentationMediaFiles,
             $this->projectFiles,
@@ -119,7 +125,7 @@ class MarkdownProjectFactory
     private function processDocumentationFiles(): void
     {
         foreach ($this->documentationFiles as $documentationFile) {
-
+            // TODO: hier die parser ausführen, nicht in ->addFiles()?
             $links = $this->extractLinks($documentationFile->html, $documentationFile);
             if (count($links) > 0 && !isset($this->links[(string) $documentationFile])) {
                 $this->links[(string) $documentationFile] = $links;
@@ -222,12 +228,16 @@ class MarkdownProjectFactory
         $current[$lastKey] = $newFileObject;
     }
 
+    // TODO: Definieren aus welchem Scope der Dateipfad erwartet wird (/var/www/html/ oder basierend auf /var/www/html/docs/)
     public function addFile(string|SplFileInfo $file):void
     {
         if (is_string($file)) {
             $filePath = trim($file);
+            // TODO: Prüfen ob ein absoluter Pfad gegeben wurde und ob die Datei existiert
+            // TODO: Wenn ja, dann den absoluten Pfad verwenden
+            // TODO: Wenn nein, dann den Pfad auflösen, basierend auf dem gegebenen $this->projectPath
         } elseif ($file instanceof SplFileInfo) {
-            $filePath = $file->getPath();
+            $filePath = $file->getRealPath();
         } else {
             $type = gettype($file);
             if ($type === 'object') {
@@ -236,11 +246,11 @@ class MarkdownProjectFactory
             throw new InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', $type));
         }
 
-        if (!str_starts_with($filePath, $this->projectPath)) {
+        if (!str_starts_with($filePath, $this->projectRootPath)) {
             $this->referencedExternalFiles[$filePath] = $filePath;
-        } elseif (str_starts_with($filePath, $this->documentationPath) && PathUtility::isMarkdownFile($filePath)) {
+        } elseif (str_starts_with($filePath, $this->absoluteDocumentationPath) && PathUtility::isMarkdownFile($filePath)) {
             $this->documentationFiles[$filePath] = $this->registerDocumentationFile($filePath);
-        } elseif (str_starts_with($filePath, $this->documentationPath) && PathUtility::isMediaFile($filePath)) {
+        } elseif (str_starts_with($filePath, $this->absoluteDocumentationPath) && PathUtility::isMediaFile($filePath)) {
             $this->documentationMediaFiles[$filePath] = $filePath;
         } else {
             $this->projectFiles[$filePath] = $filePath;
@@ -252,7 +262,7 @@ class MarkdownProjectFactory
         $markdownContent = $this->readFile($filePath);
 
         $newMarkdownFile = new MarkdownFile(
-            $this->projectPath,
+            $this->projectRootPath,
             $filePath,
             $markdownContent,
             '',
@@ -310,7 +320,7 @@ class MarkdownProjectFactory
         return $links;
     }
 
-    public function addFiles(array $files):void
+    public function addFiles(array|Finder $files):void
     {
         foreach ($files as $file) {
             $this->addFile($file);
@@ -321,7 +331,7 @@ class MarkdownProjectFactory
     {
         // Check if the path is a Git repository (bare or non-bare)
         if (PathUtility::isGitRepository($path)) {
-            $files = GitFilesFinder::listTrackedFiles($path, );
+            $files = GitFilesFinder::listTrackedFiles($path);
         } else {
             $files = FilesFinder::findFilesByPath($path);
         }
