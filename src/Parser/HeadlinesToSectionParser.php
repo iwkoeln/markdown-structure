@@ -41,7 +41,8 @@ class HeadlinesToSectionParser implements ParserInterface
                 $result[] = $currentHeadline;
             } else {
                 if ($currentHeadline === null) {
-                    continue;
+                    $currentHeadline = new Section(SectionType::PARAGRAPH);
+                    $result[] = $currentHeadline;
                 }
                 $currentHeadline->content[] = $currentLine;
             }

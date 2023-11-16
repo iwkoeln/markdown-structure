@@ -16,11 +16,7 @@ class MarkdownFileTest extends AbstractTestCase
         copy(__DIR__ . '/../../Fixtures/docs/index.md', $this->workspacePath . '/docs/index.md');
     }
 
-    /**
-     * @test
-     * @testdox MarkdownFile is to string convertable
-     */
-    public function testToStringConversion()
+    public function testMarkdownFileIsToStringConvertable()
     {
         $path = $this->workspacePath . '/docs/index.md';
         $markdown = '';
@@ -28,5 +24,32 @@ class MarkdownFileTest extends AbstractTestCase
 
         $markdownFile = new MarkdownFile($this->workspacePath, $path, $markdown, $html);
         $this->assertEquals($path, (string) $markdownFile);
+    }
+
+    public function testMarkdownFileHasDefaultValues()
+    {
+        $path = $this->workspacePath . '/docs/index.md';
+
+        $markdownFile = new MarkdownFile($this->workspacePath, $path, '');
+
+        $this->assertSame('', $markdownFile->markdown);
+        $this->assertSame('', $markdownFile->html);
+        $this->assertNull($markdownFile->fallbackUrl);
+        $this->assertSame([], $markdownFile->errors);
+    }
+
+    public function testMarkdownFileHasAssignedValues()
+    {
+        $path = $this->workspacePath . '/docs/index.md';
+        $markdown = 'Markdown content';
+        $html = '<p>HTML content</p>';
+        $fallbackUrl = 'https://example.com/fallback';
+
+        $markdownFile = new MarkdownFile($this->workspacePath, $path, $markdown, $html, $fallbackUrl, ['error1', 'error2']);
+
+        $this->assertSame($markdown, $markdownFile->markdown);
+        $this->assertSame($html, $markdownFile->html);
+        $this->assertSame($fallbackUrl, $markdownFile->fallbackUrl);
+        $this->assertSame(['error1', 'error2'], $markdownFile->errors);
     }
 }

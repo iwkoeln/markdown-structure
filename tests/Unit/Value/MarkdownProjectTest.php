@@ -6,7 +6,6 @@ use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MediaFile;
-use PHPUnit\Framework\TestCase;
 
 class MarkdownProjectTest extends AbstractTestCase
 {
@@ -30,20 +29,18 @@ class MarkdownProjectTest extends AbstractTestCase
         copy(__DIR__ . '/../../Fixtures/docs/features/img/image.png', $this->workspacePath . '/docs/features/img/image.png');
         copy(__DIR__ . '/../../Fixtures/docs/features/img/image.jpg', $this->workspacePath . '/docs/features/img/image.jpg');
 
-        copy(__DIR__ . '/../../Fixtures/docs/features/another-feature.md', $this->workspacePath . '/docs/features/another-feature.md');
-        copy(__DIR__ . '/../../Fixtures/docs/features/feature.md', $this->workspacePath . '/docs/features/feature.md');
-
-        copy(__DIR__ . '/../../Fixtures/docs/dev/some-dev-doc.md', $this->workspacePath . '/docs/dev/some-dev-doc.md');
+        // Additional fixture for testing getFileByPath
+        copy(__DIR__ . '/../../Fixtures/docs/dev/some-dev-doc.md', $this->workspacePath . '/docs/some-dev-doc.md');
     }
 
     /**
      * @test
      * @testdox MarkdownFiles can be found by path
      */
-    public function test()
+    public function testGetFileByPath()
     {
         $rootPath = $this->workspacePath;
-        $projectFiles = [
+        $documentationFiles = [
             $this->workspacePath . '/docs/index.md' =>
                 new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/index.md', '', ''),
             $this->workspacePath . '/docs/features/another-feature.md' =>
@@ -53,23 +50,34 @@ class MarkdownProjectTest extends AbstractTestCase
             $this->workspacePath . '/docs/dev/some-dev-doc.md' =>
                 new MarkdownFile($this->workspacePath, $this->workspacePath . '/docs/dev/some-dev-doc.md', '', ''),
         ];
-        $projectMediaFiles = [
+        $documentationMediaFiles = [
             $this->workspacePath . '/docs/features/img/image.png' =>
                 new MediaFile($this->workspacePath . '/docs/features/img/image.png'),
             $this->workspacePath . '/docs/features/img/image.png' =>
                 new MediaFile($this->workspacePath . '/docs/features/img/image.png')
         ];
-        $indexPath = $this->workspacePath . '/docs/index.md';
         $projectFilesNested = [];
         $errors = null;
 
-        $markdownProjekt = new MarkdownProject($rootPath, $rootPath, $indexPath, $projectFiles, $projectMediaFiles, [], [], $projectFilesNested, $errors);
+        $markdownProjekt = new MarkdownProject($rootPath, '/docs', '/index.md', $documentationFiles, $documentationMediaFiles, [], [], $projectFilesNested);
 
         $markdownFile = $markdownProjekt->getFileByPath($this->workspacePath . '/docs/index.md');
         $this->assertEquals($this->workspacePath . '/docs/index.md', (string) $markdownFile);
         $markdownFile = $markdownProjekt->getFileByPath($this->workspacePath . '/docs/features/another-feature.md');
         $this->assertEquals($this->workspacePath . '/docs/features/another-feature.md', (string) $markdownFile);
-        $markdownFile = $markdownProjekt->getFileByPath($this->workspacePath . '/docs/features/feature.md');
-        $this->assertEquals($this->workspacePath . '/docs/features/feature.md', (string) $markdownFile);
+        $markdownFile = $markdownProjekt->getFileByPath($this->workspacePath . '/docs/dev/some-dev-doc.md');
+        $this->assertEquals($this->workspacePath . '/docs/dev/some-dev-doc.md', (string) $markdownFile);
+    }
+
+    /**
+     * @test
+     * @testdox MarkdownProject can be created with empty values
+     */
+    public function testCreateMarkdownProjectWithEmptyValues()
+    {
+        $markdownProjekt = new MarkdownProject('', '', '', [], [], [], [], []);
+
+        // Assert that the project can be created without errors
+        $this->assertInstanceOf(MarkdownProject::class, $markdownProjekt);
     }
 }

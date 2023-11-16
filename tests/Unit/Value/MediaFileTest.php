@@ -31,6 +31,7 @@ class MediaFileTest extends AbstractTestCase
         $mediaFile = new MediaFile($path, $image);
         $this->assertEquals($path, (string) $mediaFile);
     }
+
     /**
      * @test
      * @testdox MediaFile constructors
@@ -45,5 +46,36 @@ class MediaFileTest extends AbstractTestCase
 
         $mediaFile = new MediaFile($path);
         $this->assertEquals($path, (string) $mediaFile);
+    }
+
+    /**
+     * @test
+     * @testdox MediaFile has errors attribute
+     */
+    public function testMediaFileErrorsAttribute()
+    {
+        $path = $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->workspacePath . '/docs/img/image.jpg';
+
+        $mediaFile = new MediaFile($path, $image, ['Error 1', 'Error 2']);
+
+        $this->assertIsArray($mediaFile->errors);
+        $this->assertCount(2, $mediaFile->errors);
+        $this->assertEquals(['Error 1', 'Error 2'], $mediaFile->errors);
+    }
+
+    /**
+     * @test
+     * @testdox MediaFile errors attribute is empty by default
+     */
+    public function testMediaFileDefaultErrorsAttribute()
+    {
+        $path = $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->workspacePath . '/docs/img/image.jpg';
+
+        $mediaFile = new MediaFile($path, $image);
+
+        $this->assertIsArray($mediaFile->errors);
+        $this->assertEmpty($mediaFile->errors);
     }
 }

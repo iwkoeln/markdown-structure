@@ -6,7 +6,7 @@ use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MediaFile;
 
-class CollectFileErrorsFinisher implements MarkdownProjectFinisherInterface
+final class CollectFileErrorsFinisher implements MarkdownProjectFinisherInterface
 {
 
     public function finish(MarkdownProject $project): void

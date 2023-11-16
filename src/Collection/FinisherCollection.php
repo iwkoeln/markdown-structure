@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Collection;
 
-class FinisherCollection extends AbstractCollection
+final class FinisherCollection extends AbstractCollection
 {
 
 }

@@ -40,20 +40,23 @@ class FilesFinderTest extends AbstractTestCase
      */
     public function testIfFilesFinderFindsFiles()
     {
-
-        $files = FilesFinder::findFilesbyPath($this->getBasePath() . $this->workspacePath . '/docs');
+        $filesFinder = FilesFinder::findFilesByPath($this->getBasePath() . $this->workspacePath . '/docs');
         $expectedFiles = [
-            $this->getBasePath() . $this->workspacePath . '/docs/dev/some-dev-doc.md',
-            $this->getBasePath() . $this->workspacePath . '/docs/features/another-feature.md',
-            $this->getBasePath() . $this->workspacePath . '/docs/features/feature.md',
-            $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.jpg',
-            $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.png',
-            $this->getBasePath() .  $this->workspacePath . '/docs/img/example.gif',
-            $this->getBasePath() . $this->workspacePath . '/docs/img/example.svg',
-            $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg',
-            $this->getBasePath() . $this->workspacePath . '/docs/img/image.png',
-            $this->getBasePath() .  $this->workspacePath . '/docs/index.md',
+            $this->getBasePath() . $this->workspacePath . '/docs/dev/some-dev-doc.md' => $this->getBasePath() . $this->workspacePath . '/docs/dev/some-dev-doc.md',
+            $this->getBasePath() . $this->workspacePath . '/docs/features/another-feature.md' => $this->getBasePath() . $this->workspacePath . '/docs/features/another-feature.md',
+            $this->getBasePath() . $this->workspacePath . '/docs/features/feature.md' => $this->getBasePath() . $this->workspacePath . '/docs/features/feature.md',
+            $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.jpg' => $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.jpg',
+            $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.png' => $this->getBasePath() . $this->workspacePath . '/docs/features/img/image.png',
+            $this->getBasePath() .  $this->workspacePath . '/docs/img/example.gif' => $this->getBasePath() .  $this->workspacePath . '/docs/img/example.gif',
+            $this->getBasePath() . $this->workspacePath . '/docs/img/example.svg' => $this->getBasePath() . $this->workspacePath . '/docs/img/example.svg',
+            $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg' => $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg',
+            $this->getBasePath() . $this->workspacePath . '/docs/img/image.png' => $this->getBasePath() . $this->workspacePath . '/docs/img/image.png',
+            $this->getBasePath() .  $this->workspacePath . '/docs/index.md' => $this->getBasePath() .  $this->workspacePath . '/docs/index.md',
         ];
-        $this->assertEquals($expectedFiles, $files);
+
+        $actualFiles = iterator_to_array($filesFinder);
+
+        $this->assertEquals($expectedFiles, $actualFiles);
     }
+
 }

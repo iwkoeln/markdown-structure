@@ -21,7 +21,7 @@ class MarkdownImageValidator implements ValidatorInterface
     {
         if ($this->fileCanBeValidated($file)) {
             $errors = [];
-            $domCrawler = new Crawler($file);
+            $domCrawler = new Crawler($file->html);
             $imageNodes = $domCrawler->filter('img');
 
             foreach ($imageNodes as $imageNode) {

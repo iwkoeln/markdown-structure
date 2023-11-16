@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Collection;
 
-class ParserCollection extends AbstractCollection
+final class ParserCollection extends AbstractCollection
 {
 
 }

@@ -17,13 +17,5 @@ class FilesFinder
 
         $finder = new Finder();
         return $finder->files()->in($absolutePath);
-//
-//        $files = [];
-//        foreach ($finder as $file) {
-//            $files[] = $file->getRealPath();
-//        }
-//
-//        sort($files);
-//        return $files;
     }
 }

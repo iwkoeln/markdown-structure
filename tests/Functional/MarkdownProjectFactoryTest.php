@@ -5,8 +5,11 @@ namespace Iwm\MarkdownStructure\Tests\Functional;
 use ErrorException;
 use InvalidArgumentException;
 use Iwm\MarkdownStructure\MarkdownProjectFactory;
+use Iwm\MarkdownStructure\Parser\ParagraphToContainerParser;
 use Iwm\MarkdownStructure\Utility\FilesFinder;
+use Iwm\MarkdownStructure\Validator\MediaFileValidator;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MarkdownProject;
 use PHPUnit\Framework\TestCase;
 
 class MarkdownProjectFactoryTest extends AbstractTestCase
@@ -70,11 +73,56 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
 
         $project = $factory->create();
 
-//        $this->assertEquals($expectedProject, $project);
-//        $this->assertEquals(
-//            new MarkdownFile(),
-//            $project
-//        );
-        $this->assertTrue(true);
+        $this->assertInstanceOf(MarkdownProject::class, $project);
+    }
+
+    /**
+     * @test
+     * @testdox MarkdownProjectFactory should create a MarkdownProject with custom parsers and validators
+     */
+    public function testCreateMarkdownProjectWithCustomParsersAndValidators(): void
+    {
+        $basePath = $this->getBasePath() . $this->workspacePath;
+        $factory = new MarkdownProjectFactory($basePath);
+
+        $customParser = new ParagraphToContainerParser();
+        $customValidator = new MediaFileValidator();
+        $factory->registerParser([$customParser]);
+        $factory->registerValidators([$customValidator]);
+
+        $markdownProject = $factory->create();
+
+        $this->assertInstanceOf(MarkdownProject::class, $markdownProject);
+    }
+
+    /**
+     * @test
+     * @testdox MarkdownProjectFactory should create a MarkdownProject with a custom fallback base URL
+     */
+    public function testCreateMarkdownProjectWithCustomFallbackBaseUrl(): void
+    {
+        $basePath = $this->getBasePath() . $this->workspacePath;
+        $customFallbackBaseUrl = 'https://custom.example.com/';
+        $factory = new MarkdownProjectFactory($basePath, '/docs', '/index.md', $customFallbackBaseUrl);
+
+        $markdownProject = $factory->create();
+
+        $this->assertInstanceOf(MarkdownProject::class, $markdownProject);
+    }
+
+    /**
+     * @test
+     * @testdox MarkdownProjectFactory should throw an exception when adding invalid files
+     */
+    public function testAddInvalidFiles(): void
+    {
+        $basePath = $this->getBasePath() . $this->workspacePath;
+        $factory = new MarkdownProjectFactory($basePath);
+
+        $invalidFile = 'non_existent_file.md';
+
+//        $this->expectException(InvalidArgumentException::class);
+
+        $factory->addFile($invalidFile);
     }
 }

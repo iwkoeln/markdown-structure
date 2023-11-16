@@ -2,12 +2,9 @@
 
 namespace Iwm\MarkdownStructure\Value;
 
-// TODO: Handle references between images and Markdown files.
-
-use League\CommonMark\Output\RenderedContentInterface;
-
 class MarkdownFile
 {
+    // TODO: Handle references between images and Markdown files.
     public array $sectionedResult = [];
     public function __construct(
         readonly public string $basePath,

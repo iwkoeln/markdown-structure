@@ -11,7 +11,7 @@ class SectionsToHtmlParser implements ParserInterface
 {
     public function fileIsParsable(MarkdownFile|MediaFile $file): bool
     {
-        return $file instanceof MarkdownFile;
+        return $file instanceof MarkdownFile && !empty($file->sectionedResult);
     }
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile

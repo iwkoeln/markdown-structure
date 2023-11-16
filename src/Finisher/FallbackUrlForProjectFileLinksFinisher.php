@@ -9,7 +9,7 @@ use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
 use Iwm\MarkdownStructure\Value\MediaFile;
 
-class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
+final class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
 {
     public function fileCanBeFinished(MarkdownFile|MediaFile $file): bool
     {
@@ -32,7 +32,7 @@ class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
             if ($link instanceof MarkdownLink && !in_array($link->absolutePath(), $documentationFiles)) {
                 $absolutePath = $link->absolutePath();
                 $relativePath = PathUtility::resolveRelativePath($file->basePath, $absolutePath);
-                $file->html = str_replace($link->target, $file->fallbackUrl . $relativePath, $file->html);
+                $file->html = str_replace($link->target, rtrim($file->fallbackUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($relativePath,DIRECTORY_SEPARATOR), $file->html);
             }
         }
         return $file;

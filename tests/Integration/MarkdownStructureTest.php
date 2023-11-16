@@ -9,10 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MarkdownStructureTest extends TestCase
 {
-    /**
-     * @test
-     * @testdox Test all classes and methods
-     */
     public function testAll()
     {
         $this->assertTrue(true);
