@@ -13,7 +13,7 @@ Debug::enable();
 
 $projectRootPath = getenv('BASE_PATH') ?: '/var/www/html';
 $mdProjectPath = "/tests/Fixtures/docs";
-//$mdProjectPath = "/tests/Fixtures/docs-with-errors";
+$mdProjectPath = "/tests/Fixtures/docs-with-errors";
 //$mdProjectPath = "/tests/Fixtures/general-editors-guide.git";
 $indexPath = "/index.md";
 $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';

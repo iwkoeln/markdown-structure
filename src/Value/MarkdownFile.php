@@ -15,7 +15,7 @@ class MarkdownFile
         public string $markdown,
         public string $html = '',
         readonly public ?string $fallbackUrl = null,
-        public ?array $errors = null
+        public array $errors = []
     )
     {
     }

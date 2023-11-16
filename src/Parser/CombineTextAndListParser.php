@@ -3,24 +3,26 @@
 namespace Iwm\MarkdownStructure\Parser;
 
 use Iwm\MarkdownStructure\Parser\ParserInterface;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MediaFile;
 use Iwm\MarkdownStructure\Value\Section;
 
 class CombineTextAndListParser implements ParserInterface
 {
-    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
+    public function fileIsParsable(MarkdownFile|MediaFile $file): bool
     {
-        if (!$this->fileIsParsable(get_class($file))) {
+        return $file instanceof MarkdownFile;
+    }
+
+    public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
+    {
+        if (!$this->fileIsParsable($file)) {
             return $file;
         }
 
         $file->sectionedResult = $this->modifyAllSections($file->sectionedResult);
 
         return $file;
-    }
-
-    public function fileIsParsable(string $fileType): bool
-    {
-        return $fileType === 'Iwm\MarkdownStructure\Value\MarkdownFile';
     }
 
     private function modifyAllSections($sectionedResult): array

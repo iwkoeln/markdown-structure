@@ -3,6 +3,8 @@
 namespace Iwm\MarkdownStructure\Parser;
 
 use Iwm\MarkdownStructure\Parser\ParserInterface;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MediaFile;
 use Iwm\MarkdownStructure\Value\Section;
 use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
@@ -10,27 +12,23 @@ use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class MarkdownToHTMLParser implements ParserInterface
 {
+    public function fileIsParsable(MarkdownFile|MediaFile $file): bool
+    {
+        return $file instanceof MarkdownFile;
+    }
+
     /**
-     * @param mixed $file
-     * @param array|null $documentationFiles
-     * @param array|null $documentationMediaFiles
-     * @param array|null $projectFiles
      * @throws CommonMarkException
      */
-    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
+    public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable(get_class($file))) {
+        if (!$this->fileIsParsable($file)) {
             return $file;
         }
 
         $file->sectionedResult = $this->modifyAllSections($file->sectionedResult);
 
         return $file;
-    }
-
-    public function fileIsParsable(string $fileType): bool
-    {
-        return $fileType === 'Iwm\MarkdownStructure\Value\MarkdownFile';
     }
 
     /**

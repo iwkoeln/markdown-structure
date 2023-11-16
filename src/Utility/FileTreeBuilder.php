@@ -48,4 +48,15 @@ class FileTreeBuilder
 
         return $node;
     }
+
+    public static function setValueFromNestedReferencesArray(array &$nestedFiles, string $newFilePath, mixed $newFileObject): void
+    {
+        $keys = explode('/', $newFilePath);
+        $lastKey = array_pop($keys);
+        $current = &$nestedFiles;
+        foreach ($keys as $key) {
+            $current = &$current[$key];
+        }
+        $current[$lastKey] = $newFileObject;
+    }
 }

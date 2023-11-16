@@ -13,7 +13,7 @@ class MediaFile
     public function __construct(
         public string $path,
         public string $image = '',
-        public ?array $errors = null
+        public array $errors = []
     )
     {
         if ($this->image === '') {

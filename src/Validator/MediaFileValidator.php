@@ -5,24 +5,27 @@ namespace Iwm\MarkdownStructure\Validator;
 use Iwm\MarkdownStructure\Error\ImageDoesNotExistError;
 use Iwm\MarkdownStructure\Error\ImageTooLargeError;
 use Iwm\MarkdownStructure\Utility\PathUtility;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MediaFile;
 use Symfony\Component\Finder\SplFileInfo;
 
 class MediaFileValidator implements ValidatorInterface
 {
-
-    public function validate(?string $parsedResult, string $path, array $markdownFiles, array $mediaFiles): array
+    public function fileCanBeValidated(MarkdownFile|MediaFile $file): bool
     {
-        $errors = [];
-
-        if (!$this->fileCanBeValidated($path)) {
-            return $errors;
-        }
-
-        $errors = array_merge($errors, $this->checkFileSize($path));
-        $errors = array_merge($errors, $this->checkFileExistence($path));
-
-        return $errors;
+        return $file instanceof MediaFile;
     }
+
+    public function validate(MediaFile|MarkdownFile $file, array $markdownFiles, array $mediaFiles): void
+    {
+        if ($this->fileCanBeValidated($file)) {
+            $errors = [];
+            $errors = array_merge($errors, $this->checkFileSize($file));
+            $errors = array_merge($errors, $this->checkFileExistence($file));
+            $file->errors = array_merge($file->errors, $errors);
+        }
+    }
+
     public function checkFileSize(string $path): array
     {
         $errors = [];
@@ -96,10 +99,5 @@ class MediaFileValidator implements ValidatorInterface
         }
 
         return $errors;
-    }
-
-    public function fileCanBeValidated(string $path): bool
-    {
-        return PathUtility::isMediaFile($path);
     }
 }

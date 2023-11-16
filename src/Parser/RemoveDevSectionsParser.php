@@ -3,18 +3,19 @@
 namespace Iwm\MarkdownStructure\Parser;
 
 use Iwm\MarkdownStructure\Parser\ParserInterface;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MediaFile;
 
 class RemoveDevSectionsParser implements ParserInterface
 {
-
-    public function fileIsParsable(string $fileType): bool
+    public function fileIsParsable(MarkdownFile|MediaFile $file): bool
     {
-        return $fileType === 'Iwm\MarkdownStructure\Value\MarkdownFile';
+        return $file instanceof MarkdownFile;
     }
 
-    public function parse(mixed $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): mixed
+    public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable(get_class($file))) {
+        if (!$this->fileIsParsable($file)) {
             return $file;
         }
 

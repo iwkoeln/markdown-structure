@@ -5,35 +5,34 @@ namespace Iwm\MarkdownStructure\Validator;
 use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\PathUtility;
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+use Iwm\MarkdownStructure\Value\MediaFile;
 
 class MarkdownLinksValidator implements ValidatorInterface
 {
-    public function fileCanBeValidated(string $path): bool
+    public function fileCanBeValidated(MarkdownFile|MediaFile $file): bool
     {
-        return PathUtility::isMarkdownFile($path);
+        return $file instanceof MarkdownFile;
     }
 
-    public function validate(?string $parsedResult, string $path, array $markdownFiles, array $mediaFiles): array
+    public function validate(MarkdownFile|MediaFile $file, array $markdownFiles, array $mediaFiles): void
     {
-        $errors = [];
+        if ($this->fileCanBeValidated($file)) {
+            $errors = [];
+            $markdownLinks = DomLinkExtractor::extractLinks($file->html, $file->path);
 
-        if (!$this->fileCanBeValidated($path) || $parsedResult === null) {
-            return $errors;
-        }
-
-        $markdownLinks = DomLinkExtractor::extractLinks($parsedResult, $path);
-
-        foreach ($markdownLinks as $markdownLink) {
-            $absolutePath = $markdownLink->absolutePath();
-            if (!array_key_exists($absolutePath, $markdownFiles) && !array_key_exists($absolutePath, $mediaFiles)) {
-                $errors[] = new LinkTargetNotFoundError(
-                    $path,
-                    $absolutePath,
-                    $markdownLink->linkText
-                );
+            foreach ($markdownLinks as $markdownLink) {
+                $absolutePath = $markdownLink->absolutePath();
+                if (!array_key_exists($absolutePath, $markdownFiles) && !array_key_exists($absolutePath, $mediaFiles)) {
+                    $errors[] = new LinkTargetNotFoundError(
+                        $file->path,
+                        $absolutePath,
+                        $markdownLink->linkText
+                    );
+                }
             }
-        }
 
-        return $errors;
+            $file->errors = array_merge($file->errors, $errors);
+        }
     }
 }
