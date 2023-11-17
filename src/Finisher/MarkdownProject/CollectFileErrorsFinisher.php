@@ -14,11 +14,15 @@ final class CollectFileErrorsFinisher implements MarkdownProjectFinisherInterfac
         $errors = [];
         /** @var MarkdownFile $markdownFile */
         foreach ($project->documentationFiles as $markdownFile) {
-            $errors[$markdownFile->path] = $markdownFile->errors;
+            if (!empty($markdownFile->errors)) {
+                $errors[$markdownFile->path] = $markdownFile->errors;
+            }
         }
         /** @var MediaFile $mediaFile */
         foreach ($project->documentationMediaFiles as $mediaFile) {
-            $errors[$mediaFile->path] = $mediaFile->errors;
+            if (!empty($mediaFile->errors)) {
+                $errors[$mediaFile->path] = $mediaFile->errors;
+            }
         }
         $project->errors = $errors;
     }
