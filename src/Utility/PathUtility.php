@@ -235,4 +235,9 @@ class PathUtility
         // If ".git" is not found in the path, return the original path.
         return $path;
     }
+
+    public static function isAbsolutePath(string $filePath): bool
+    {
+        return str_starts_with($filePath, '/') || str_starts_with($filePath, '\\');
+    }
 }

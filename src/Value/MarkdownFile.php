@@ -4,7 +4,7 @@ namespace Iwm\MarkdownStructure\Value;
 
 class MarkdownFile
 {
-    // TODO: Handle references between images and Markdown files.
+    // ENHANCEMENT: Handle references between images and Markdown files.
     public array $sectionedResult = [];
     public function __construct(
         readonly public string $basePath,

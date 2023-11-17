@@ -66,10 +66,8 @@ class SplitByEmptyLineParserTest extends TestCase
         $markdownContent = "Section 1\nContent 1\n\n\n\n\nSection 2\nContent 2";
         $markdownFile = new MarkdownFile('/path', 'file.md', $markdownContent);
 
-        // TODO: REFACTOR THE PARSER TO HANDLE MULTIPLE CONSECUTIVE EMPTY LINES
         $expectedSectionedResult = [
             "Section 1\nContent 1",
-            "",
             "\nSection 2\nContent 2",
         ];
 

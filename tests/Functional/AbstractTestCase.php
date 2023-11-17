@@ -33,14 +33,14 @@ abstract class AbstractTestCase extends TestCase
 
     public function setUp(): void
     {
-        if (!is_dir($this->workspacePath)) {
-            mkdir($this->workspacePath, 0777, true);
-                    } else {
+        if (!is_dir($this->getBasePath() . $this->workspacePath)) {
+            mkdir($this->getBasePath() . $this->workspacePath, 0777, true);
+        } else {
             $this->cleanUpWorkspace();
         }
 
         foreach ($this->files as $filePath => $fileContents) {
-            file_put_contents($this->workspacePath . '/' . $filePath, $fileContents);
+            file_put_contents($this->getBasePath() . $this->workspacePath . '/' . $filePath, $fileContents);
         }
 
         putenv('COLUMNS=240');
@@ -53,6 +53,6 @@ abstract class AbstractTestCase extends TestCase
 
     private function cleanUpWorkspace(): void
     {
-        exec('rm -rf ' . $this->workspacePath . '/* ');
+        exec('rm -rf ' . $this->getBasePath() . $this->workspacePath . '/* ');
     }
 }

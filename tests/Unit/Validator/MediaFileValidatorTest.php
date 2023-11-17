@@ -16,16 +16,14 @@ class MediaFileValidatorTest extends AbstractTestCase
     {
         parent::setUp();
 
-        mkdir($this->workspacePath . '/docs-with-errors', 0777, true);
-        mkdir($this->workspacePath . '/docs-with-errors/validator', 0777, true);
-        mkdir($this->workspacePath . '/docs-with-errors/img', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors/validator', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors/img', 0777, true);
 
-        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->workspacePath . '/docs-with-errors/img/image.jpg');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/image.jpg');
 
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/large_image.png', $this->workspacePath . '/docs-with-errors/img/large_image.png');
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->workspacePath . '/docs-with-errors/img/non-image.txt');
-
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/validator/cause-error.md', $this->workspacePath . '/docs-with-errors/validator/cause-error.md');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/large_image.png', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/large_image.png');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt');
     }
 
     public function testFileCanBeValidatedForMediaFile()
@@ -47,7 +45,7 @@ class MediaFileValidatorTest extends AbstractTestCase
     public function testCheckFileSizeWithinLimit()
     {
         $validator = new MediaFileValidator();
-        $path = $this->workspacePath . '/docs-with-errors/img/image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/image.jpg';
 
         $errors = $validator->checkFileSize($path);
 
@@ -57,14 +55,14 @@ class MediaFileValidatorTest extends AbstractTestCase
     public function testCheckFileSizeTooLarge()
     {
         $validator = new MediaFileValidator();
-        $path = $this->workspacePath . '/docs-with-errors/img/large_image.png';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/large_image.png';
 
         $errors = $validator->checkFileSize($path);
 
         $this->assertCount(1, $errors);
         $this->assertInstanceOf(ImageTooLargeError::class, $errors[0]);
         $this->assertEquals(
-            'Error: Image file size exceeds 1 MB: in ' . $this->workspacePath . '/docs-with-errors/img/large_image.png' . '. File size: 20419686 bytes.',
+            'Error: Image file size exceeds 1 MB: in ' . $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/large_image.png' . '. File size: 20419686 bytes.',
             $errors[0]->getErrorMessage()
         );
     }
@@ -82,14 +80,14 @@ class MediaFileValidatorTest extends AbstractTestCase
     public function testCheckFileExistenceNotExists()
     {
         $validator = new MediaFileValidator();
-        $path = $this->workspacePath . '/Fixtures/docs/img/non_existing_image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/Fixtures/docs/img/non_existing_image.jpg';
 
         $errors = $validator->checkFileExistence($path);
 
         $this->assertCount(1, $errors);
         $this->assertInstanceOf(ImageDoesNotExistError::class, $errors[0]);
         $this->assertEquals(
-            'Error: Image file does not exist: in ' . $this->workspacePath . '/Fixtures/docs/img/non_existing_image.jpg' . '.',
+            'Error: Image file does not exist: in ' . $this->getBasePath() . $this->workspacePath . '/Fixtures/docs/img/non_existing_image.jpg' . '.',
             $errors[0]->getErrorMessage()
         );
     }

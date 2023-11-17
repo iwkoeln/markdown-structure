@@ -53,7 +53,6 @@ class CollectFileErrorsFinisherTest extends TestCase
             '/path/to/file1.md' => ['Error 1', 'Error 2'],
             '/path/to/file2.md' => ['Error 3'],
             '/path/to/image1.jpg' => ['Error 4'],
-            '/path/to/image2.png' => [],
         ];
 
         $this->assertEquals($expectedErrors, $project->errors);

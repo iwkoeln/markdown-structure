@@ -3,7 +3,7 @@
 namespace Iwm\MarkdownStructure\Value;
 
 
-/*TODO
+/* ENHANCEMENT:
  * Additional attributes for MarkdownProject: "MediaFiles" can be added,
  * by separating Markdown and other files using nested if statements.
  * Use a new FileObject for each medium, instead of a simple string.

@@ -16,16 +16,16 @@ class MarkdownLinksValidatorTest extends AbstractTestCase
     {
         parent::setUp();
 
-        mkdir($this->workspacePath . '/docs-with-errors', 0777, true);
-        mkdir($this->workspacePath . '/docs-with-errors/validator', 0777, true);
-        mkdir($this->workspacePath . '/docs-with-errors/img', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors/validator', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs-with-errors/img', 0777, true);
 
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/index.md', $this->workspacePath . '/docs-with-errors/index.md');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/index.md', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/index.md');
 
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/image-not-in-img.png', $this->workspacePath . '/docs-with-errors/image-not-in-img.png');
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->workspacePath . '/docs-with-errors/img/non-image.txt');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/image-not-in-img.png', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/image-not-in-img.png');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/img/non-image.txt', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt');
 
-        copy(__DIR__ . '/../../Fixtures/docs-with-errors/validator/cause-error.md', $this->workspacePath . '/docs-with-errors/validator/cause-error.md');
+        copy(__DIR__ . '/../../Fixtures/docs-with-errors/validator/cause-error.md', $this->getBasePath() . $this->workspacePath . '/docs-with-errors/validator/cause-error.md');
     }
 
     /**
@@ -40,8 +40,8 @@ class MarkdownLinksValidatorTest extends AbstractTestCase
         $html = $parser->convert($markdown);
 
         $file = new MarkdownFile(
-            $this->workspacePath,
-            $this->workspacePath . '/docs-with-errors/index.md',
+            $this->getBasePath() . $this->workspacePath,
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/index.md',
             $markdown,
             $html,
         );
@@ -49,8 +49,8 @@ class MarkdownLinksValidatorTest extends AbstractTestCase
         (new MarkdownLinksValidator())->validate($file, [], []);
 
         $expectedError = new LinkTargetNotFoundError(
-            $this->workspacePath . '/docs-with-errors/index.md',
-            $this->workspacePath . '/docs-with-errors/cause-error.md',
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/index.md',
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/cause-error.md',
             'An error'
         );
 
@@ -70,16 +70,16 @@ class MarkdownLinksValidatorTest extends AbstractTestCase
     public function testSkipIfFileCannotBeValidated()
     {
         $markdownFile = new MarkdownFile(
-            $this->workspacePath,
-            $this->workspacePath . '/docs-with-errors/index.md',
+            $this->getBasePath() . $this->workspacePath,
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/index.md',
             '',
         );
 
         $this->assertTrue((new MarkdownLinksValidator())->fileCanBeValidated($markdownFile));
 
         $mediaFile = new MediaFile(
-            $this->workspacePath . '/docs-with-errors/img/non-image.txt',
-            $this->workspacePath . '/docs-with-errors/img/non-image.txt',
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt',
+            $this->getBasePath() . $this->workspacePath . '/docs-with-errors/img/non-image.txt',
         );
 
         $this->assertFalse((new MarkdownLinksValidator())->fileCanBeValidated($mediaFile));

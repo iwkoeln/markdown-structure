@@ -12,11 +12,11 @@ class MediaFileTest extends AbstractTestCase
     {
         parent::setUp();
 
-        mkdir($this->workspacePath . '/docs', 0777, true);
-        mkdir($this->workspacePath . '/docs/img', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs', 0777, true);
+        mkdir($this->getBasePath() . $this->workspacePath . '/docs/img', 0777, true);
 
-        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->workspacePath . '/docs/img/image.jpg');
-        copy(__DIR__ . '/../../Fixtures/docs/img/image.png', $this->workspacePath . '/docs/img/image.png');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.jpg', $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg');
+        copy(__DIR__ . '/../../Fixtures/docs/img/image.png', $this->getBasePath() . $this->workspacePath . '/docs/img/image.png');
     }
 
     /**
@@ -25,8 +25,8 @@ class MediaFileTest extends AbstractTestCase
      */
     public function testToStringConversion()
     {
-        $path = $this->workspacePath . '/docs/img/image.jpg';
-        $image = $this->workspacePath . '/docs/img/image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image);
         $this->assertEquals($path, (string) $mediaFile);
@@ -38,8 +38,8 @@ class MediaFileTest extends AbstractTestCase
      */
     public function testMediaFileConstructors()
     {
-        $path = $this->workspacePath . '/docs/img/image.jpg';
-        $image = $this->workspacePath . '/docs/img/image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image);
         $this->assertEquals($path, (string) $mediaFile);
@@ -54,8 +54,8 @@ class MediaFileTest extends AbstractTestCase
      */
     public function testMediaFileErrorsAttribute()
     {
-        $path = $this->workspacePath . '/docs/img/image.jpg';
-        $image = $this->workspacePath . '/docs/img/image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image, ['Error 1', 'Error 2']);
 
@@ -70,8 +70,8 @@ class MediaFileTest extends AbstractTestCase
      */
     public function testMediaFileDefaultErrorsAttribute()
     {
-        $path = $this->workspacePath . '/docs/img/image.jpg';
-        $image = $this->workspacePath . '/docs/img/image.jpg';
+        $path = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
+        $image = $this->getBasePath() . $this->workspacePath . '/docs/img/image.jpg';
 
         $mediaFile = new MediaFile($path, $image);
 

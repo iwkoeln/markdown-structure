@@ -48,8 +48,8 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
      */
     public function testException(): void
     {
-        $basePath = $this->getBasePath() . $this->workspacePath;
-        $mdProjectPath = dirname($this->getBasePath() . $this->workspacePath);
+        $basePath = $this->getBasePath() . $this->workspacePath . '/folder-that-does-not-exists';
+        $mdProjectPath = $this->getBasePath() . $this->workspacePath . '/folder-that-does-not-exists';
         $indexPath = "/index.md";
         $url = 'https://bitbucket.org/iwm/markdown-structure/src/master/';
 

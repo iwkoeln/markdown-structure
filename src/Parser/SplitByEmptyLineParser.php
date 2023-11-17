@@ -25,6 +25,10 @@ class SplitByEmptyLineParser implements ParserInterface
 
     private function parseSections($markdown): array
     {
-        return explode("\n\n", $markdown);
+        $sections = explode("\n\n", $markdown);
+        // Remove empty strings
+        $sections =  array_filter($sections, 'strlen');
+        return array_values($sections);
     }
+
 }

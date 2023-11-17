@@ -59,6 +59,16 @@ class MarkdownProjectFactory
     private ?MarkdownProjectValidatorCollection $markdownProjectValidators = null;
     private ?MarkdownProjectFinisherCollection $markdownProjectFinisher = null;
 
+    /**
+     * MarkdownProjectFactory constructor.
+     * This Method will set the project root path and the documentation path.
+     * It will also set the default parser, validator and finisher.
+     *
+     * @param string $projectRootPath The absolute path to the project root directory
+     * @param string $documentationPath The relative path to the documentation directory
+     * @param string $documentationIndexFile The relative path to the documentation index file
+     * @param string|null $fallbackBaseUrl The fallback base url for links to files in the project
+     */
     public function __construct(
         string                  $projectRootPath,
         readonly private string $documentationPath = '/docs',
@@ -68,14 +78,12 @@ class MarkdownProjectFactory
     {
         // Set paths
         $this->projectRootPath = rtrim(realpath($projectRootPath), DIRECTORY_SEPARATOR);
-        // Check if the directory exists
+
+        // Check if the directory exists and build paths
         if (!is_dir($this->projectRootPath)) {
             throw new InvalidArgumentException(sprintf('Given project root path "%s" does not exist.', $this->projectRootPath));
         }
         $this->absoluteDocumentationPath = $this->projectRootPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
-        if (!is_dir($this->absoluteDocumentationPath)) {
-            throw new InvalidArgumentException(sprintf('Given documentation path "%s" does not exist.', $this->absoluteDocumentationPath));
-        }
         $this->fallbackBaseUrl = $fallbackBaseUrl;
 
         // Init Collections
@@ -103,6 +111,9 @@ class MarkdownProjectFactory
         $this->markdownProjectFinisher->add(new CollectFileErrorsFinisher());
     }
 
+    /**
+     * Create a MarkdownProject from the given files
+     */
     public function create(): MarkdownProject
     {
         // Process Files - Parse, validate, finish
@@ -146,6 +157,9 @@ class MarkdownProjectFactory
      * PARSER, VALIDATOR, FINISHER
      *****************************************/
 
+    /**
+     * Parse the given file
+     */
     public function parseFile(MarkdownFile|MediaFile $file): void
     {
         /** @var ParserInterface $parser */
@@ -154,6 +168,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Finish the given file
+     */
     public function finishFile(MarkdownFile|MediaFile $file): void
     {
         /** @var FinisherInterface $finisher */
@@ -162,6 +179,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Validate the given file
+     */
     private function validateFile(MarkdownFile|MediaFile $file): void
     {
         /** @var ValidatorInterface $validator */
@@ -170,6 +190,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /*
+     * Validate the given MarkdownProject
+     */
     private function validateMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectValidatorInterface $validator */
@@ -178,6 +201,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /*
+     * Finish the given MarkdownProject
+     */
     private function finishMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectFinisherInterface $finisher */
@@ -190,6 +216,9 @@ class MarkdownProjectFactory
      * PATH TO OBJECT CONVERSIONS
      *****************************************/
 
+    /**
+     * Convert the given file path to a MarkdownFile object
+     */
     private function covertFilePathToMarkdownFileObject(string $filePath): MarkdownFile
     {
         return new MarkdownFile(
@@ -202,6 +231,9 @@ class MarkdownProjectFactory
         );
     }
 
+    /**
+     * Convert the given file path to a MediaFile object
+     */
     private function convertFilePathToMediaFileObject(string $filePath): MediaFile
     {
         return new MediaFile(
@@ -214,14 +246,16 @@ class MarkdownProjectFactory
      * ADDING AND READING FILES
      *****************************************/
 
-    // TODO: Definieren aus welchem Scope der Dateipfad erwartet wird (/var/www/html/ oder basierend auf /var/www/html/docs/)
+    /**
+     * Add Files manually by providing the relative path of the file from the projectRootPath
+     */
     public function addFile(string|SplFileInfo $file):void
     {
         if (is_string($file)) {
             $filePath = trim($file);
-            // TODO: Prüfen ob ein absoluter Pfad gegeben wurde und ob die Datei existiert
-            // TODO: Wenn ja, dann den absoluten Pfad verwenden
-            // TODO: Wenn nein, dann den Pfad auflösen, basierend auf dem gegebenen $this->projectPath
+            if (!PathUtility::isAbsolutePath($filePath)) {
+                $filePath = PathUtility::resolveAbsolutePath($this->projectRootPath, $filePath);
+            }
         } elseif ($file instanceof SplFileInfo) {
             $filePath = $file->getRealPath();
         } else {
@@ -243,18 +277,21 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Read the file content from the given file path
+     */
     private function readFile(string $filePath): string
     {
         // Check if the project path is a Git repository
-        if (PathUtility::isGitRepository($this->documentationPath)) {
+        if (PathUtility::isGitRepository($this->absoluteDocumentationPath)) {
 
             // Extract the relative path from the full file path
-            $relativePath = PathUtility::resolveRelativePath($this->documentationPath, $filePath);
+            $relativePath = PathUtility::resolveRelativePath($this->projectRootPath, $filePath);
 
             // Use the git show command to get the file content from the bare repository
             $branchOrTag = 'master';
             $command = sprintf('git --git-dir=%s show %s:%s',
-                escapeshellarg($this->documentationPath),
+                escapeshellarg($this->projectRootPath),
                 escapeshellarg($branchOrTag),
                 escapeshellarg($relativePath));
 
@@ -275,6 +312,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Add Files programmatically by providing an array of file paths
+     */
     public function addFiles(array|Finder $files):void
     {
         foreach ($files as $file) {
@@ -286,6 +326,9 @@ class MarkdownProjectFactory
      * EXTENDABLE CONFIGURATION
      *****************************************/
 
+    /**
+     * Register each parser in the given array
+     */
     public function registerParser(array $parsers): void
     {
         /** @var ParserInterface $parser */
@@ -294,6 +337,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Register each validator in the given array
+     */
     public function registerValidators(array $validators): void
     {
         /** @var ValidatorInterface $validator */
@@ -302,6 +348,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Register each finisher in the given array
+     */
     public function registerFinisher(array $finishers): void
     {
         /** @var FinisherInterface $finsiher */
@@ -310,6 +359,9 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Register each project validator in the given array
+     */
     public function registerProjectValidators(array $validators): void
     {
         /** @var MarkdownProjectValidatorInterface $validator */
@@ -318,33 +370,14 @@ class MarkdownProjectFactory
         }
     }
 
+    /**
+     * Register each project finisher in the given array
+     */
     public function registerProjectFinishers(array $finishers): void
     {
         /** @var MarkdownProjectFinisherInterface $finsiher */
         foreach ($finishers as $finisher) {
             $this->markdownProjectFinisher->add($finisher);
         }
-    }
-
-    /*****************************************
-     * DROPPABLE STUFF
-     *****************************************/
-
-    public function addExternalSource(string $name, string $path)
-    {
-        // TODO: Specify functions function
-    }
-
-    public function loadFilesByPath(string $path): void
-    {
-        // TODO: Remove this method...
-        // Check if the path is a Git repository (bare or non-bare)
-        if (PathUtility::isGitRepository($path)) {
-            $files = GitFilesFinder::listTrackedFiles($path);
-        } else {
-            $files = FilesFinder::findFilesByPath($path);
-        }
-
-        $this->addFiles($files);
     }
 }
