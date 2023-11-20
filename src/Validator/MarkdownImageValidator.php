@@ -3,12 +3,10 @@
 namespace Iwm\MarkdownStructure\Validator;
 
 use Iwm\MarkdownStructure\Error\ImageDoesNotExistError;
+use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
-use SplFileInfo;
-use Iwm\MarkdownStructure\Utility\PathUtility;
 use Symfony\Component\DomCrawler\Crawler;
-use DOMElement;
 
 class MarkdownImageValidator implements ValidatorInterface
 {
@@ -25,7 +23,7 @@ class MarkdownImageValidator implements ValidatorInterface
             $imageNodes = $domCrawler->filter('img');
 
             foreach ($imageNodes as $imageNode) {
-                if ($imageNode instanceof DOMElement) {
+                if ($imageNode instanceof \DOMElement) {
                     $src = $imageNode->getAttribute('src');
 
                     if (!empty($src)) {

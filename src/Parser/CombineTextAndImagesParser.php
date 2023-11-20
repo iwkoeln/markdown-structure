@@ -34,6 +34,7 @@ class CombineTextAndImagesParser implements ParserInterface
             }
             $result[] = $currentSection;
         }
+
         return $result;
     }
 
@@ -43,7 +44,7 @@ class CombineTextAndImagesParser implements ParserInterface
         $predecessor = null;
 
         foreach ($content as $currentLine) {
-            if (preg_match('/!\[.*?\]\(.*?\)/', $currentLine) && $predecessor !== null) {
+            if (preg_match('/!\[.*?\]\(.*?\)/', $currentLine) && null !== $predecessor) {
 
                 $lines = explode("\n", $predecessor);
                 $lastLineOfPredecessor = end($lines);
@@ -56,6 +57,7 @@ class CombineTextAndImagesParser implements ParserInterface
             $result[] = $currentLine;
             $predecessor = $currentLine;
         }
+
         return $result;
     }
 }

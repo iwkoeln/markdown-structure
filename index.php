@@ -22,7 +22,7 @@ Debug::enable();
 // --------------------
 $root = getenv('BASE_PATH') ?: '/var/www/html';
 $projectRootPath = $root . '/tests/Fixtures'; // Standard Test
-//$projectRootPath = $root . '/tests/Fixtures/general-editors-guide.git'; // Test Bare Git Repository
+$projectRootPath = $root . '/tests/Fixtures/general-editors-guide.git'; // Test Bare Git Repository
 // $documentationPath = "/docs"; // Standard Test
 //$documentationPath = "/docs-with-errors"; // Standard Test with Errors
 $documentationPath = "/docs"; // Test Bare Git Repository
@@ -77,10 +77,10 @@ $factory->registerFinisher([
 //);
 
 // Add files for normal folders
-$factory->addFiles(FilesFinder::findFilesByPath($factory->absoluteDocumentationPath));
+//$factory->addFiles(FilesFinder::findFilesByPath($factory->absoluteDocumentationPath));
 
 // Add files for Git repositories (Bare)
-//$factory->addFiles(listTrackedFiles($projectRootPath));
+$factory->addFiles(listTrackedFiles($projectRootPath));
 
 // ------------------------
 // Create and Process Project

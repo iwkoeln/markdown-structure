@@ -13,7 +13,7 @@ abstract class AbstractCollection
 
     public function remove($item): void
     {
-        if(($key = array_search($item, $this->items)) !== false) {
+        if (($key = array_search($item, $this->items)) !== false) {
             unset($this->items[$key]);
         }
     }

@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure\Parser;
 
-use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
 

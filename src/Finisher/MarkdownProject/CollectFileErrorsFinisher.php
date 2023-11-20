@@ -8,7 +8,6 @@ use Iwm\MarkdownStructure\Value\MediaFile;
 
 final class CollectFileErrorsFinisher implements MarkdownProjectFinisherInterface
 {
-
     public function finish(MarkdownProject $project): void
     {
         $errors = [];

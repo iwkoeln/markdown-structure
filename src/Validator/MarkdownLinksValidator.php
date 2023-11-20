@@ -4,7 +4,6 @@ namespace Iwm\MarkdownStructure\Validator;
 
 use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
-use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
 

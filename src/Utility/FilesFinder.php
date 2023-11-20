@@ -16,6 +16,7 @@ class FilesFinder
         }
 
         $finder = new Finder();
+
         return $finder->files()->in($absolutePath);
     }
 }

@@ -6,6 +6,7 @@ class MarkdownFile
 {
     // ENHANCEMENT: Handle references between images and Markdown files.
     public array $sectionedResult = [];
+
     public function __construct(
         readonly public string $basePath,
         readonly public string $path,
@@ -13,8 +14,7 @@ class MarkdownFile
         public string $html = '',
         readonly public ?string $fallbackUrl = null,
         public array $errors = []
-    )
-    {
+    ) {
     }
 
     public function __toString(): string

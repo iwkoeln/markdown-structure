@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure\Parser;
 
-use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
 use Iwm\MarkdownStructure\Value\Section;
@@ -35,6 +34,7 @@ class CombineTextAndListParser implements ParserInterface
             }
             $result[] = $currentSection;
         }
+
         return $result;
     }
 
@@ -44,7 +44,7 @@ class CombineTextAndListParser implements ParserInterface
         $predecessor = null;
 
         foreach ($content as $currentLine) {
-            if (preg_match('/^[\t ]*[\*\-] /m', $currentLine) && $predecessor !== null) {
+            if (preg_match('/^[\t ]*[\*\-] /m', $currentLine) && null !== $predecessor) {
 
                 $lines = explode("\n", $predecessor);
                 $lastLineOfPredecessor = end($lines);
@@ -57,7 +57,7 @@ class CombineTextAndListParser implements ParserInterface
             $result[] = $currentLine;
             $predecessor = $currentLine;
         }
+
         return $result;
     }
-
 }

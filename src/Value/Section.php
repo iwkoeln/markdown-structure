@@ -9,7 +9,8 @@ class Section
     public int $level = 0;
     public SectionType $type;
 
-    public function __construct(SectionType $type) {
+    public function __construct(SectionType $type)
+    {
         $this->type = $type;
     }
 }

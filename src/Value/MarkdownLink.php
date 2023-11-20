@@ -11,7 +11,9 @@ class MarkdownLink
         readonly public string $target,
         readonly public bool $isExternal,
         readonly public string $linkText = '',
-    ){}
+    ) {
+    }
+
     public function absolutePath(): string
     {
         return PathUtility::resolveAbsolutePath($this->source, $this->target);

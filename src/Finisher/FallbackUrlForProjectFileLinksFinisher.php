@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure\Finisher;
 
-use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
@@ -21,7 +20,7 @@ final class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
         if (!$this->fileCanBeFinished($file)) {
             return $file;
         }
-        if (empty($documentationFiles) || $file->fallbackUrl === null) {
+        if (empty($documentationFiles) || null === $file->fallbackUrl) {
             return $file;
         }
 
@@ -32,9 +31,10 @@ final class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
             if ($link instanceof MarkdownLink && !in_array($link->absolutePath(), $documentationFiles)) {
                 $absolutePath = $link->absolutePath();
                 $relativePath = PathUtility::resolveRelativePath($file->basePath, $absolutePath);
-                $file->html = str_replace($link->target, rtrim($file->fallbackUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($relativePath,DIRECTORY_SEPARATOR), $file->html);
+                $file->html = str_replace($link->target, rtrim($file->fallbackUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($relativePath, DIRECTORY_SEPARATOR), $file->html);
             }
         }
+
         return $file;
     }
 }

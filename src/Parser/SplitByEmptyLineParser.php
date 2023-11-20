@@ -27,8 +27,8 @@ class SplitByEmptyLineParser implements ParserInterface
     {
         $sections = explode("\n\n", $markdown);
         // Remove empty strings
-        $sections =  array_filter($sections, 'strlen');
+        $sections = array_filter($sections, 'strlen');
+
         return array_values($sections);
     }
-
 }

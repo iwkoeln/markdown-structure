@@ -2,10 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Parser;
 
-use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
-use Iwm\MarkdownStructure\Value\Section;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 

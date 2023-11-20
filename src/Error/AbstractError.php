@@ -4,12 +4,10 @@ namespace Iwm\MarkdownStructure\Error;
 
 abstract class AbstractError implements ErrorInterface
 {
-
     public function __construct(
         protected string $errorSource,
         protected string $errorMessage
-    )
-    {
+    ) {
     }
 
     // Implement getErrorMessage method in the abstract class if it's common for all errors
@@ -21,4 +19,3 @@ abstract class AbstractError implements ErrorInterface
         return $this->getErrorMessage();
     }
 }
-

@@ -2,7 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Value;
 
-enum SectionType: string {
+enum SectionType: string
+{
     case HEADLINE = 'Headline';
     case PARAGRAPH = 'Pragraph';
 }

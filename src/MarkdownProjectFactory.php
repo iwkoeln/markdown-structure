@@ -5,8 +5,8 @@ namespace Iwm\MarkdownStructure;
 use InvalidArgumentException;
 use Iwm\MarkdownStructure\Collection\FinisherCollection;
 use Iwm\MarkdownStructure\Collection\MarkdownProjectFinisherCollection;
-use Iwm\MarkdownStructure\Collection\ParserCollection;
 use Iwm\MarkdownStructure\Collection\MarkdownProjectValidatorCollection;
+use Iwm\MarkdownStructure\Collection\ParserCollection;
 use Iwm\MarkdownStructure\Collection\ValidatorCollection;
 use Iwm\MarkdownStructure\Finisher\FallbackUrlForProjectFileLinksFinisher;
 use Iwm\MarkdownStructure\Finisher\FinisherInterface;
@@ -14,15 +14,13 @@ use Iwm\MarkdownStructure\Finisher\MarkdownProject\CollectFileErrorsFinisher;
 use Iwm\MarkdownStructure\Finisher\MarkdownProject\MarkdownProjectFinisherInterface;
 use Iwm\MarkdownStructure\Parser\MarkdownToHtmlParser;
 use Iwm\MarkdownStructure\Parser\ParserInterface;
-use Iwm\MarkdownStructure\Utility\FilesFinder;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
-use Iwm\MarkdownStructure\Utility\GitFilesFinder;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Validator\MarkdownImageValidator;
 use Iwm\MarkdownStructure\Validator\MarkdownLinksValidator;
-use Iwm\MarkdownStructure\Validator\MediaFileValidator;
-use Iwm\MarkdownStructure\Validator\MarkdownProject\OrphanFileValidator;
 use Iwm\MarkdownStructure\Validator\MarkdownProject\MarkdownProjectValidatorInterface;
+use Iwm\MarkdownStructure\Validator\MarkdownProject\OrphanFileValidator;
+use Iwm\MarkdownStructure\Validator\MediaFileValidator;
 use Iwm\MarkdownStructure\Validator\ValidatorInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
@@ -64,18 +62,17 @@ class MarkdownProjectFactory
      * This Method will set the project root path and the documentation path.
      * It will also set the default parser, validator and finisher.
      *
-     * @param string $projectRootPath The absolute path to the project root directory
-     * @param string $documentationPath The relative path to the documentation directory
-     * @param string $documentationIndexFile The relative path to the documentation index file
-     * @param string|null $fallbackBaseUrl The fallback base url for links to files in the project
+     * @param string      $projectRootPath        The absolute path to the project root directory
+     * @param string      $documentationPath      The relative path to the documentation directory
+     * @param string      $documentationIndexFile The relative path to the documentation index file
+     * @param string|null $fallbackBaseUrl        The fallback base url for links to files in the project
      */
     public function __construct(
-        string                  $projectRootPath,
+        string $projectRootPath,
         readonly private string $documentationPath = '/docs',
         readonly private string $documentationIndexFile = '/index.md',
-        ?string                 $fallbackBaseUrl = null,
-    )
-    {
+        string $fallbackBaseUrl = null,
+    ) {
         // Set paths
         $this->projectRootPath = rtrim(realpath($projectRootPath), DIRECTORY_SEPARATOR);
 
@@ -112,7 +109,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Create a MarkdownProject from the given files
+     * Create a MarkdownProject from the given files.
      */
     public function create(): MarkdownProject
     {
@@ -153,12 +150,10 @@ class MarkdownProjectFactory
         return $markdownProject;
     }
 
-    /*****************************************
-     * PARSER, VALIDATOR, FINISHER
-     *****************************************/
+    // PARSER, VALIDATOR, FINISHER
 
     /**
-     * Parse the given file
+     * Parse the given file.
      */
     public function parseFile(MarkdownFile|MediaFile $file): void
     {
@@ -169,7 +164,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Finish the given file
+     * Finish the given file.
      */
     public function finishFile(MarkdownFile|MediaFile $file): void
     {
@@ -180,7 +175,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Validate the given file
+     * Validate the given file.
      */
     private function validateFile(MarkdownFile|MediaFile $file): void
     {
@@ -190,9 +185,7 @@ class MarkdownProjectFactory
         }
     }
 
-    /*
-     * Validate the given MarkdownProject
-     */
+    // Validate the given MarkdownProject
     private function validateMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectValidatorInterface $validator */
@@ -201,9 +194,7 @@ class MarkdownProjectFactory
         }
     }
 
-    /*
-     * Finish the given MarkdownProject
-     */
+    // Finish the given MarkdownProject
     private function finishMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectFinisherInterface $finisher */
@@ -212,12 +203,10 @@ class MarkdownProjectFactory
         }
     }
 
-    /*****************************************
-     * PATH TO OBJECT CONVERSIONS
-     *****************************************/
+    // PATH TO OBJECT CONVERSIONS
 
     /**
-     * Convert the given file path to a MarkdownFile object
+     * Convert the given file path to a MarkdownFile object.
      */
     private function covertFilePathToMarkdownFileObject(string $filePath): MarkdownFile
     {
@@ -232,7 +221,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Convert the given file path to a MediaFile object
+     * Convert the given file path to a MediaFile object.
      */
     private function convertFilePathToMediaFileObject(string $filePath): MediaFile
     {
@@ -242,14 +231,12 @@ class MarkdownProjectFactory
         );
     }
 
-    /*****************************************
-     * ADDING AND READING FILES
-     *****************************************/
+    // ADDING AND READING FILES
 
     /**
-     * Add Files manually by providing the relative path of the file from the projectRootPath
+     * Add Files manually by providing the relative path of the file from the projectRootPath.
      */
-    public function addFile(string|SplFileInfo $file):void
+    public function addFile(string|SplFileInfo $file): void
     {
         if (is_string($file)) {
             $filePath = trim($file);
@@ -260,7 +247,7 @@ class MarkdownProjectFactory
             $filePath = $file->getRealPath();
         } else {
             $type = gettype($file);
-            if ($type === 'object') {
+            if ('object' === $type) {
                 $type = get_class($file);
             }
             throw new InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', $type));
@@ -278,7 +265,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Read the file content from the given file path
+     * Read the file content from the given file path.
      */
     private function readFile(string $filePath): string
     {
@@ -290,44 +277,46 @@ class MarkdownProjectFactory
 
             // Use the git show command to get the file content from the bare repository
             $branchOrTag = 'master';
-            $command = sprintf('git --git-dir=%s show %s:%s',
+            $command = sprintf(
+                'git --git-dir=%s show %s:%s',
                 escapeshellarg($this->projectRootPath),
                 escapeshellarg($branchOrTag),
-                escapeshellarg($relativePath));
+                escapeshellarg($relativePath)
+            );
 
             $output = shell_exec($command);
 
-            if ($output === null) {
+            if (null === $output) {
                 throw new RuntimeException(sprintf('Failed to read file from Git repository: %s', $filePath));
             }
-            return $output;
-        } else {
 
-            // For regular directories, read the file content normally
-            $content = file_get_contents($filePath);
-            if ($content === false) {
-                throw new RuntimeException(sprintf('Failed to open file: %s', $filePath));
-            }
-            return $content;
+            return $output;
         }
+
+        // For regular directories, read the file content normally
+        $content = file_get_contents($filePath);
+        if (false === $content) {
+            throw new RuntimeException(sprintf('Failed to open file: %s', $filePath));
+        }
+
+        return $content;
+
     }
 
     /**
-     * Add Files programmatically by providing an array of file paths
+     * Add Files programmatically by providing an array of file paths.
      */
-    public function addFiles(array|Finder $files):void
+    public function addFiles(array|Finder $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    /*****************************************
-     * EXTENDABLE CONFIGURATION
-     *****************************************/
+    // EXTENDABLE CONFIGURATION
 
     /**
-     * Register each parser in the given array
+     * Register each parser in the given array.
      */
     public function registerParser(array $parsers): void
     {
@@ -338,7 +327,7 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Register each validator in the given array
+     * Register each validator in the given array.
      */
     public function registerValidators(array $validators): void
     {
@@ -349,18 +338,18 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Register each finisher in the given array
+     * Register each finisher in the given array.
      */
     public function registerFinisher(array $finishers): void
     {
-        /** @var FinisherInterface $finsiher */
+        // @var FinisherInterface $finsiher
         foreach ($finishers as $finisher) {
             $this->finisher->add($finisher);
         }
     }
 
     /**
-     * Register each project validator in the given array
+     * Register each project validator in the given array.
      */
     public function registerProjectValidators(array $validators): void
     {
@@ -371,11 +360,11 @@ class MarkdownProjectFactory
     }
 
     /**
-     * Register each project finisher in the given array
+     * Register each project finisher in the given array.
      */
     public function registerProjectFinishers(array $finishers): void
     {
-        /** @var MarkdownProjectFinisherInterface $finsiher */
+        // @var MarkdownProjectFinisherInterface $finsiher
         foreach ($finishers as $finisher) {
             $this->markdownProjectFinisher->add($finisher);
         }

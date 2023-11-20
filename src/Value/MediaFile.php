@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure\Value;
 
-
 /* ENHANCEMENT:
  * Additional attributes for MarkdownProject: "MediaFiles" can be added,
  * by separating Markdown and other files using nested if statements.
@@ -14,13 +13,11 @@ class MediaFile
         public string $path,
         public string $image = '',
         public array $errors = []
-    )
-    {
-        if ($this->image === '') {
+    ) {
+        if ('' === $this->image) {
             $this->image = $this->path;
         }
     }
-
 
     public function __toString(): string
     {

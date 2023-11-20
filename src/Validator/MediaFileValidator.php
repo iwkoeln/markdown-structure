@@ -40,14 +40,16 @@ class MediaFileValidator implements ValidatorInterface
 
             // Use the git ls-tree command to check if the file exists in the repository
             $branchOrTag = 'master';
-            $lsTreeCommand = sprintf('git --git-dir=%s ls-tree %s %s',
+            $lsTreeCommand = sprintf(
+                'git --git-dir=%s ls-tree %s %s',
                 escapeshellarg($gitRepositoryPath),
                 escapeshellarg($branchOrTag),
-                escapeshellarg($relativePath));
+                escapeshellarg($relativePath)
+            );
 
             $lsTreeOutput = shell_exec($lsTreeCommand);
 
-            if ($lsTreeOutput === null) {
+            if (null === $lsTreeOutput) {
                 throw new \RuntimeException(sprintf('Failed to check file existence in Git repository: %s', $path));
             }
 
@@ -80,14 +82,16 @@ class MediaFileValidator implements ValidatorInterface
 
             // Use the git ls-tree command to check if the file exists in the repository
             $branchOrTag = 'master';
-            $lsTreeCommand = sprintf('git --git-dir=%s ls-tree %s %s',
+            $lsTreeCommand = sprintf(
+                'git --git-dir=%s ls-tree %s %s',
                 escapeshellarg($gitRepositoryPath),
                 escapeshellarg($branchOrTag),
-                escapeshellarg($relativePath));
+                escapeshellarg($relativePath)
+            );
 
             $lsTreeOutput = shell_exec($lsTreeCommand);
 
-            if ($lsTreeOutput === null) {
+            if (null === $lsTreeOutput) {
                 throw new \RuntimeException(sprintf('Failed to check file existence in Git repository: %s', $path));
             }
 

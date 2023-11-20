@@ -4,7 +4,6 @@ namespace Iwm\MarkdownStructure\Utility;
 
 class FileTreeBuilder
 {
-
     /**
      * Converts flat list of file paths to nested array.
      *

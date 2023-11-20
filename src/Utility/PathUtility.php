@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Iwm\MarkdownStructure\Utility;
 
-use SplFileInfo;
 use Symfony\Component\Process\Process;
-use function PHPUnit\Framework\stringContains;
 
 class PathUtility
 {
@@ -25,15 +23,15 @@ class PathUtility
     public static function isMediaFile(string $path): bool
     {
         return (
-                in_array(substr($path, -3), ['jpg', 'png', 'gif', 'svg', 'pdf', 'doc', 'xls', 'ppt']) ||
-                in_array(substr($path, -4), ['jpeg', 'docx', 'xlsx', 'pptx'])
-            )
-            &&
-            (
-                'img' === strtolower(basename(dirname($path))) ||
-                'image' === strtolower(basename(dirname($path))
-            )
-        );
+            in_array(substr($path, -3), ['jpg', 'png', 'gif', 'svg', 'pdf', 'doc', 'xls', 'ppt'])
+            || in_array(substr($path, -4), ['jpeg', 'docx', 'xlsx', 'pptx'])
+        )
+            && (
+                'img' === strtolower(basename(dirname($path)))
+                || 'image' === strtolower(
+                    basename(dirname($path))
+                )
+            );
     }
 
     public static function isMarkdownFile(string $path): bool
@@ -54,18 +52,19 @@ class PathUtility
     {
         // Check if the link starts with http://, https://, www. or ends with .de or .com
         if (
-            preg_match('/^https?:\/\//i', $pathOrUrl) ||
-            preg_match('/^http?:\/\//i', $pathOrUrl) ||
-            preg_match('/^www\./i', $pathOrUrl) ||
-            preg_match('/^mailto:/i', $pathOrUrl) ||
-            preg_match('/\.de$|\.com$/i', $pathOrUrl)
+            preg_match('/^https?:\/\//i', $pathOrUrl)
+            || preg_match('/^http?:\/\//i', $pathOrUrl)
+            || preg_match('/^www\./i', $pathOrUrl)
+            || preg_match('/^mailto:/i', $pathOrUrl)
+            || preg_match('/\.de$|\.com$/i', $pathOrUrl)
         ) {
             // External link
             return true;
-        } else {
-            // Local file path or invalid link format
-            return false;
         }
+
+        // Local file path or invalid link format
+        return false;
+
     }
 
     public static function buildFileTree(array $filePaths): array
@@ -107,6 +106,7 @@ class PathUtility
                 ++$depthOfPath;
             }
         }
+
         return $depthOfPath <= $levelsToRoot;
     }
 
@@ -149,9 +149,9 @@ class PathUtility
         $absoluteParts = explode(DIRECTORY_SEPARATOR, rtrim($absolutePath, DIRECTORY_SEPARATOR));
 
         // TODO: Find out why this is needed
-        //if (isset($baseParts[0]) && empty($baseParts[0])) {
+        // if (isset($baseParts[0]) && empty($baseParts[0])) {
         //    return $absolutePath;
-        //}
+        // }
 
         while (count($baseParts) > 0 && count($absoluteParts) > 0 && $baseParts[0] === $absoluteParts[0]) {
             array_shift($baseParts);
@@ -203,15 +203,15 @@ class PathUtility
             return true;
         }
 
-// Check if somewhere in the path a .git directory exists (bare repository)
-//        $pathParts = explode('/', $path);
-//        while (count($pathParts) > 0) {
-//            $path = implode('/', $pathParts);
-//            if (is_dir($path . '/.git')) {
-//                return true;
-//            }
-//            array_pop($pathParts);
-//        }
+        // Check if somewhere in the path a .git directory exists (bare repository)
+        //        $pathParts = explode('/', $path);
+        //        while (count($pathParts) > 0) {
+        //            $path = implode('/', $pathParts);
+        //            if (is_dir($path . '/.git')) {
+        //                return true;
+        //            }
+        //            array_pop($pathParts);
+        //        }
 
         // Check if the directory is a bare repository by looking for common Git repository files
         $gitFiles = ['config', 'objects', 'refs', 'HEAD'];
@@ -228,7 +228,7 @@ class PathUtility
     {
         $position = strpos($path, '.git');
 
-        if ($position !== false) {
+        if (false !== $position) {
             return substr($path, 0, $position + 4); // +4 to include ".git"
         }
 

@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure\Parser;
 
-use Iwm\MarkdownStructure\Parser\ParserInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
 use Iwm\MarkdownStructure\Value\Section;
@@ -40,7 +39,7 @@ class HeadlinesToSectionParser implements ParserInterface
                 $currentHeadline->level = $headlineLevel;
                 $result[] = $currentHeadline;
             } else {
-                if ($currentHeadline === null) {
+                if (null === $currentHeadline) {
                     $currentHeadline = new Section(SectionType::PARAGRAPH);
                     $result[] = $currentHeadline;
                 }
