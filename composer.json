@@ -4,6 +4,12 @@
     "version": "0.0.1",
     "type": "library",
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://iwm-platform-hub.de/composer"
+        }
+    ],
     "authors": [
         {
             "name": "Armin Vieweg",
@@ -33,7 +39,7 @@
         "phpunit/phpunit": "^10.2",
         "seld/phar-utils": "^1.2",
         "symfony/var-dumper": "^6.3",
-        "ext-http": "*"
+        "iwm/code-quality": "^1.1.0"
     },
     "autoload": {
         "psr-4": {
@@ -55,6 +61,28 @@
             "@test-php-unit-coverage"
         ],
         "test-php-unit": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests",
-        "test-php-unit-coverage": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests --coverage-text --coverage-filter ./src"
+        "test-php-unit-coverage": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests --coverage-text --coverage-filter ./src",
+        "check": [
+            "@editorconfig-check",
+            "@phpcs",
+            "@phpstan",
+            "@composer validate --strict --no-check-version --no-check-all --no-check-publish"
+        ],
+        "fix": [
+            "@editorconfig-fix",
+            "@phpcs:fix",
+            "@phpstan"
+        ],
+        "editorconfig-check": "ec -g -u",
+        "editorconfig-fix": "ec -g --fix",
+        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config vendor/iwm/code-quality/config/php-cs-fixer.php --ansi --verbose --diff --dry-run -- src",
+        "phpcs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config vendor/iwm/code-quality/config/php-cs-fixer.php --ansi -- src",
+        "phpstan": "phpstan analyse -c vendor/iwm/code-quality/config/phpstan.neon -l 8 -- src"
+    },
+    "config": {
+        "allow-plugins": {
+            "typo3/cms-composer-installers": true,
+            "typo3/class-alias-loader": true
+        }
     }
 }
