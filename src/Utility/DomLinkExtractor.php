@@ -7,6 +7,9 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class DomLinkExtractor
 {
+    /**
+     * @return array<MarkdownLink>
+     */
     public static function extractLinks(string $parsedResult, string $sourcePath): array
     {
         $domCrawler = new Crawler($parsedResult);
@@ -27,6 +30,10 @@ class DomLinkExtractor
 
         return $links;
     }
+
+    /**
+     * @return array<MarkdownLink>
+     */
     public static function extractImages(string $parsedResult, string $sourcePath): array
     {
         $domCrawler = new Crawler($parsedResult);

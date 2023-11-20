@@ -16,7 +16,7 @@ class HeadlinesToSectionParser implements ParserInterface
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
 
@@ -25,7 +25,12 @@ class HeadlinesToSectionParser implements ParserInterface
         return $file;
     }
 
-    private function headlinesToSection($sectionedResult): array
+    /**
+     * @param array<Section|string> $sectionedResult
+     *
+     * @return array<Section|string>
+     */
+    private function headlinesToSection(array $sectionedResult): array
     {
         $result = [];
         $currentHeadline = null;
@@ -43,7 +48,7 @@ class HeadlinesToSectionParser implements ParserInterface
                     $currentHeadline = new Section(SectionType::PARAGRAPH);
                     $result[] = $currentHeadline;
                 }
-                $currentHeadline->content[] = $currentLine;
+                $currentHeadline->content[] = (string)$currentLine;
             }
         }
 

@@ -2,7 +2,6 @@
 
 namespace Iwm\MarkdownStructure;
 
-use InvalidArgumentException;
 use Iwm\MarkdownStructure\Collection\FinisherCollection;
 use Iwm\MarkdownStructure\Collection\MarkdownProjectFinisherCollection;
 use Iwm\MarkdownStructure\Collection\MarkdownProjectValidatorCollection;
@@ -25,8 +24,6 @@ use Iwm\MarkdownStructure\Validator\ValidatorInterface;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MediaFile;
-use RuntimeException;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 class MarkdownProjectFactory
@@ -38,24 +35,27 @@ class MarkdownProjectFactory
     public bool $enableNestedStructure = true;
 
     // Files
-    /** @var array|string[] All (but documentation) files in given repository */
+    /** @var array<string> All (but documentation) files in given repository */
     public array $projectFiles = [];
-    /** @var array|string[] Markdown files */
+    /** @var array<MarkdownFile> Markdown files */
     public array $documentationFiles = [];
-    /** @var array|string[] Media files */
+    /** @var array<MediaFile> Media files */
     public array $documentationMediaFiles = [];
-    /** @var array|string[] External files but referenced */
+    /** @var array<string> External files but referenced */
     public array $referencedExternalFiles = [];
 
     // Nesting
+    /**
+     * @var array<string, mixed> Nested file tree, with file or folder name as values
+     */
     public array $nestedDocumentationFiles = [];
 
     // Extendable Collections
-    private ?ParserCollection $parser = null;
-    private ?ValidatorCollection $validators = null;
-    private ?FinisherCollection $finisher = null;
-    private ?MarkdownProjectValidatorCollection $markdownProjectValidators = null;
-    private ?MarkdownProjectFinisherCollection $markdownProjectFinisher = null;
+    private ParserCollection $parser;
+    private ValidatorCollection $validators;
+    private FinisherCollection $finisher;
+    private MarkdownProjectValidatorCollection $markdownProjectValidators;
+    private MarkdownProjectFinisherCollection $markdownProjectFinisher;
 
     /**
      * MarkdownProjectFactory constructor.
@@ -74,11 +74,15 @@ class MarkdownProjectFactory
         string $fallbackBaseUrl = null,
     ) {
         // Set paths
-        $this->projectRootPath = rtrim(realpath($projectRootPath), DIRECTORY_SEPARATOR);
+        if ($realProjectRootPath = realpath($projectRootPath)) {
+            $this->projectRootPath = rtrim($realProjectRootPath, DIRECTORY_SEPARATOR);
+        } else {
+            $this->projectRootPath = rtrim($projectRootPath, DIRECTORY_SEPARATOR);
+        }
 
         // Check if the directory exists and build paths
         if (!is_dir($this->projectRootPath)) {
-            throw new InvalidArgumentException(sprintf('Given project root path "%s" does not exist.', $this->projectRootPath));
+            throw new \InvalidArgumentException(sprintf('Given project root path "%s" does not exist.', $this->projectRootPath));
         }
         $this->absoluteDocumentationPath = $this->projectRootPath . DIRECTORY_SEPARATOR . trim($documentationPath, DIRECTORY_SEPARATOR);
         $this->fallbackBaseUrl = $fallbackBaseUrl;
@@ -236,21 +240,17 @@ class MarkdownProjectFactory
     /**
      * Add Files manually by providing the relative path of the file from the projectRootPath.
      */
-    public function addFile(string|SplFileInfo $file): void
+    public function addFile(string|\SplFileInfo $file): void
     {
         if (is_string($file)) {
             $filePath = trim($file);
             if (!PathUtility::isAbsolutePath($filePath)) {
                 $filePath = PathUtility::resolveAbsolutePath($this->projectRootPath, $filePath);
             }
-        } elseif ($file instanceof SplFileInfo) {
+        } elseif ($file instanceof \SplFileInfo) {
             $filePath = $file->getRealPath();
         } else {
-            $type = gettype($file);
-            if ('object' === $type) {
-                $type = get_class($file);
-            }
-            throw new InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', $type));
+            throw new \InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', gettype($file)));
         }
 
         if (!str_starts_with($filePath, $this->projectRootPath)) {
@@ -286,8 +286,8 @@ class MarkdownProjectFactory
 
             $output = shell_exec($command);
 
-            if (null === $output) {
-                throw new RuntimeException(sprintf('Failed to read file from Git repository: %s', $filePath));
+            if (null === $output || false === $output) {
+                throw new \RuntimeException(sprintf('Failed to read file from Git repository: %s', $filePath));
             }
 
             return $output;
@@ -296,7 +296,7 @@ class MarkdownProjectFactory
         // For regular directories, read the file content normally
         $content = file_get_contents($filePath);
         if (false === $content) {
-            throw new RuntimeException(sprintf('Failed to open file: %s', $filePath));
+            throw new \RuntimeException(sprintf('Failed to open file: %s', $filePath));
         }
 
         return $content;
@@ -305,6 +305,8 @@ class MarkdownProjectFactory
 
     /**
      * Add Files programmatically by providing an array of file paths.
+     *
+     * @param array<string>|Finder $files
      */
     public function addFiles(array|Finder $files): void
     {
@@ -317,10 +319,11 @@ class MarkdownProjectFactory
 
     /**
      * Register each parser in the given array.
+     *
+     * @param array<ParserInterface> $parsers
      */
     public function registerParser(array $parsers): void
     {
-        /** @var ParserInterface $parser */
         foreach ($parsers as $parser) {
             $this->parser->add($parser);
         }
@@ -328,10 +331,11 @@ class MarkdownProjectFactory
 
     /**
      * Register each validator in the given array.
+     *
+     * @param array<ValidatorInterface> $validators
      */
     public function registerValidators(array $validators): void
     {
-        /** @var ValidatorInterface $validator */
         foreach ($validators as $validator) {
             $this->validators->add($validator);
         }
@@ -339,10 +343,11 @@ class MarkdownProjectFactory
 
     /**
      * Register each finisher in the given array.
+     *
+     * @param array<FinisherInterface> $finishers
      */
     public function registerFinisher(array $finishers): void
     {
-        // @var FinisherInterface $finsiher
         foreach ($finishers as $finisher) {
             $this->finisher->add($finisher);
         }
@@ -350,10 +355,11 @@ class MarkdownProjectFactory
 
     /**
      * Register each project validator in the given array.
+     *
+     * @param array<MarkdownProjectValidatorInterface> $validators
      */
     public function registerProjectValidators(array $validators): void
     {
-        /** @var MarkdownProjectValidatorInterface $validator */
         foreach ($validators as $validator) {
             $this->markdownProjectValidators->add($validator);
         }
@@ -361,10 +367,11 @@ class MarkdownProjectFactory
 
     /**
      * Register each project finisher in the given array.
+     *
+     * @param array<MarkdownProjectFinisherInterface> $finishers
      */
     public function registerProjectFinishers(array $finishers): void
     {
-        // @var MarkdownProjectFinisherInterface $finsiher
         foreach ($finishers as $finisher) {
             $this->markdownProjectFinisher->add($finisher);
         }

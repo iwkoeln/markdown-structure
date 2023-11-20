@@ -15,7 +15,7 @@ class ParagraphToContainerParser implements ParserInterface
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
 
@@ -24,7 +24,12 @@ class ParagraphToContainerParser implements ParserInterface
         return $file;
     }
 
-    private function modifyAllSections($sectionedResult): array
+    /**
+     * @param array<Section|string> $sectionedResult
+     *
+     * @return array<Section|string>
+     */
+    private function modifyAllSections(array $sectionedResult): array
     {
         $result = [];
 
@@ -38,6 +43,11 @@ class ParagraphToContainerParser implements ParserInterface
         return $result;
     }
 
+    /**
+     * @param array<string> $paragraphs
+     *
+     * @return array<string>
+     */
     private function containerParagraphs(array $paragraphs): array
     {
         $containeredParagraphs = [];

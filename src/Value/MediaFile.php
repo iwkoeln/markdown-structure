@@ -7,8 +7,14 @@ namespace Iwm\MarkdownStructure\Value;
  * by separating Markdown and other files using nested if statements.
  * Use a new FileObject for each medium, instead of a simple string.
  */
+
+use Iwm\MarkdownStructure\Error\ErrorInterface;
+
 class MediaFile
 {
+    /**
+     * @param array<ErrorInterface> $errors
+     */
     public function __construct(
         public string $path,
         public string $image = '',

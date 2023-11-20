@@ -5,14 +5,21 @@ namespace Iwm\MarkdownStructure\Validator\MarkdownProject;
 use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
+use Iwm\MarkdownStructure\Value\MediaFile;
 
 class OrphanFileValidator implements MarkdownProjectValidatorInterface
 {
+    /**
+     * @var array<string>
+     */
     private array $referencedFiles = [];
+    /**
+     * @var array<string>
+     */
     private array $referencedImages = [];
+
     public function validate(MarkdownProject $project): void
     {
-        /** @var MarkdownFile $markdownFile */
         foreach ($project->documentationFiles as $markdownFile) {
             $this->validateFile($markdownFile->html, $markdownFile->path);
         }
@@ -20,9 +27,11 @@ class OrphanFileValidator implements MarkdownProjectValidatorInterface
         $project->orphans = $this->getOrphanFiles($project->documentationFiles, $project->documentationMediaFiles);
     }
 
-
     public function validateFile(?string $parsedResult, string $path): void
     {
+        if (null === $parsedResult) {
+            return;
+        }
         $markdownLinks = DomLinkExtractor::extractLinks($parsedResult, $path);
         $markdownImages = DomLinkExtractor::extractImages($parsedResult, $path);
 
@@ -41,6 +50,12 @@ class OrphanFileValidator implements MarkdownProjectValidatorInterface
         $this->referencedImages = array_unique($this->referencedImages);
     }
 
+    /**
+     * @param array<MarkdownFile> $documentationFiles
+     * @param array<MediaFile>    $documentationMediaFiles
+     *
+     * @return array<string, string>
+     */
     public function getOrphanFiles(array $documentationFiles, array $documentationMediaFiles): array
     {
         // Compare the total list of files with the referenced files to find orphans

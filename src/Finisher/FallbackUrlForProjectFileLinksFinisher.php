@@ -17,7 +17,7 @@ final class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
 
     public function finish(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileCanBeFinished($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
         if (empty($documentationFiles) || null === $file->fallbackUrl) {

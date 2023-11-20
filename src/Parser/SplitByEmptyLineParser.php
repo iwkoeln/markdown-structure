@@ -14,7 +14,7 @@ class SplitByEmptyLineParser implements ParserInterface
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
 
@@ -23,7 +23,10 @@ class SplitByEmptyLineParser implements ParserInterface
         return $file;
     }
 
-    private function parseSections($markdown): array
+    /**
+     * @return array<string>
+     */
+    private function parseSections(string $markdown): array
     {
         $sections = explode("\n\n", $markdown);
         // Remove empty strings

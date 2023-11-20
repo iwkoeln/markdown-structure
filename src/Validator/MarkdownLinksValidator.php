@@ -16,7 +16,7 @@ class MarkdownLinksValidator implements ValidatorInterface
 
     public function validate(MarkdownFile|MediaFile $file, array $markdownFiles, array $mediaFiles): void
     {
-        if ($this->fileCanBeValidated($file)) {
+        if ($file instanceof MarkdownFile) {
             $errors = [];
             $markdownLinks = DomLinkExtractor::extractLinks($file->html, $file->path);
 

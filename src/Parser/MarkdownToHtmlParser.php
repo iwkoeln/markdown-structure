@@ -16,7 +16,7 @@ class MarkdownToHtmlParser implements ParserInterface
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
 
@@ -25,7 +25,7 @@ class MarkdownToHtmlParser implements ParserInterface
         return $file;
     }
 
-    private function markdownToHtml($markdown): string
+    private function markdownToHtml(string $markdown): string
     {
         $parser = new GithubFlavoredMarkdownConverter([]);
         $parser->getEnvironment()->addExtension(new HeadingPermalinkExtension());

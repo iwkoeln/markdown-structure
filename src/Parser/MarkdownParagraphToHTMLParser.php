@@ -21,7 +21,7 @@ class MarkdownParagraphToHTMLParser implements ParserInterface
      */
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!$file instanceof MarkdownFile) {
             return $file;
         }
 
@@ -31,9 +31,13 @@ class MarkdownParagraphToHTMLParser implements ParserInterface
     }
 
     /**
+     * @param array<Section|string> $sectionedResult
+     *
+     * @return array<Section|string>
+     *
      * @throws CommonMarkException
      */
-    private function modifyAllSections($sectionedResult): array
+    private function modifyAllSections(array $sectionedResult): array
     {
         $result = [];
 
@@ -48,6 +52,10 @@ class MarkdownParagraphToHTMLParser implements ParserInterface
     }
 
     /**
+     * @param array<string> $paragraphs
+     *
+     * @return array<string>
+     *
      * @throws CommonMarkException
      */
     private function convertParagraphsToHtml(array $paragraphs): array

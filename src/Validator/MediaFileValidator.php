@@ -2,6 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Validator;
 
+use Iwm\MarkdownStructure\Error\ErrorInterface;
 use Iwm\MarkdownStructure\Error\ImageDoesNotExistError;
 use Iwm\MarkdownStructure\Error\ImageTooLargeError;
 use Iwm\MarkdownStructure\Utility\PathUtility;
@@ -26,6 +27,9 @@ class MediaFileValidator implements ValidatorInterface
         }
     }
 
+    /**
+     * @return array<ErrorInterface>
+     */
     public function checkFileSize(string $path): array
     {
         $errors = [];
@@ -67,6 +71,9 @@ class MediaFileValidator implements ValidatorInterface
         return $errors;
     }
 
+    /**
+     * @return array<ErrorInterface>
+     */
     public function checkFileExistence(string $path): array
     {
         $errors = [];

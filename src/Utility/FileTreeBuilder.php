@@ -48,6 +48,9 @@ class FileTreeBuilder
         return $node;
     }
 
+    /**
+     * @param array<mixed|string> $nestedFiles
+     */
     public static function setValueFromNestedReferencesArray(array &$nestedFiles, string $newFilePath, mixed $newFileObject): void
     {
         $keys = explode('/', $newFilePath);

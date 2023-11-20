@@ -2,11 +2,26 @@
 
 namespace Iwm\MarkdownStructure\Value;
 
+use Iwm\MarkdownStructure\Error\ErrorInterface;
+
 final class MarkdownProject
 {
+    /**
+     * @var array<array<ErrorInterface>|ErrorInterface>
+     */
     public array $errors = [];
+    /**
+     * @var array<string>
+     */
     public array $orphans = [];
 
+    /**
+     * @param array<MarkdownFile> $documentationFiles
+     * @param array<MediaFile>    $documentationMediaFiles
+     * @param array<string>       $projectFiles
+     * @param array<string>       $referencedExternalFiles
+     * @param array<string>       $nestedDocumentationFiles
+     */
     public function __construct(
         public readonly string $projectRootPath,
         public readonly string $documentationPath,

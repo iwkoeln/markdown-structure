@@ -67,6 +67,11 @@ class PathUtility
 
     }
 
+    /**
+     * @param array<mixed|string> $filePaths
+     *
+     * @return array<mixed|string>
+     */
     public static function buildFileTree(array $filePaths): array
     {
         $tree = [];
@@ -85,6 +90,13 @@ class PathUtility
         return $tree;
     }
 
+    /**
+     * @param array<mixed|string>        $node
+     * @param array<mixed|string>        $path
+     * @param array<mixed|string>|string $value
+     *
+     * @return array<mixed|string>|string
+     */
     private static function addNodeToTree(array $node, array $path, array|string $value): array|string
     {
         if (0 === count($path)) {
@@ -181,6 +193,9 @@ class PathUtility
         return preg_replace('/[^a-z0-9\-\_\.]/', '', strtolower($fileName)) ?? '';
     }
 
+    /**
+     * @param int<1, max> $levels
+     */
     public static function dirname(string $filePath, int $levels = 1): string
     {
         $dirname = dirname($filePath, $levels);

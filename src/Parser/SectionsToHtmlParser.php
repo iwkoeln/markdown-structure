@@ -15,7 +15,7 @@ class SectionsToHtmlParser implements ParserInterface
 
     public function parse(MarkdownFile|MediaFile $file, ?array $documentationFiles, ?array $documentationMediaFiles, ?array $projectFiles): MarkdownFile|MediaFile
     {
-        if (!$this->fileIsParsable($file)) {
+        if (!($file instanceof MarkdownFile && !empty($file->sectionedResult))) {
             return $file;
         }
 
@@ -24,7 +24,10 @@ class SectionsToHtmlParser implements ParserInterface
         return $file;
     }
 
-    private function sectionsToHTML($sectionedResult): string
+    /**
+     * @param array<Section|string> $sectionedResult
+     */
+    private function sectionsToHTML(array $sectionedResult): string
     {
         $html = '';
 
@@ -45,6 +48,9 @@ class SectionsToHtmlParser implements ParserInterface
         return $html;
     }
 
+    /**
+     * @param array<string> $content
+     */
     private function paragraphsToHTML(array $content): string
     {
         $html = '';
