@@ -36,10 +36,15 @@
         "symfony/process": "^6.3"
     },
     "require-dev": {
+        "symfony/debug-bundle": "6.3.*",
         "phpunit/phpunit": "^10.2",
         "seld/phar-utils": "^1.2",
         "symfony/var-dumper": "^6.3",
-        "iwm/code-quality": "^1.1.0"
+        "armin/editorconfig-cli": "^1.5",
+        "friendsofphp/php-cs-fixer": "^3.13",
+        "jangregor/phpstan-prophecy": "^1.0",
+        "phpstan/phpstan": "^1.9",
+        "phpstan/phpstan-doctrine": "^1.3"
     },
     "autoload": {
         "psr-4": {
@@ -75,9 +80,9 @@
         ],
         "editorconfig-check": "ec -g -u",
         "editorconfig-fix": "ec -g --fix",
-        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config vendor/iwm/code-quality/config/php-cs-fixer.php --ansi --verbose --diff --dry-run -- src",
-        "phpcs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config vendor/iwm/code-quality/config/php-cs-fixer.php --ansi -- src",
-        "phpstan": "phpstan analyse -c vendor/iwm/code-quality/config/phpstan.neon -l 8 -- src"
+        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi --verbose --diff --dry-run -- src",
+        "phpcs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi -- src",
+        "phpstan": "phpstan analyse -c .build/phpstan.neon -l 8 -- src"
     },
     "config": {
         "allow-plugins": {
