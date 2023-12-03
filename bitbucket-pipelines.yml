@@ -24,5 +24,8 @@ pipelines:
           # Install project dependencies
           - composer install
 
+          # Perform checks
+          - composer run check
+
           # Run tests
-          - composer run-script test
+          - composer run test
