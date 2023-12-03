@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Validator\MarkdownProject;
 
-use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
+use Iwm\MarkdownStructure\Utility\DomExtractor;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MediaFile;
@@ -32,8 +32,8 @@ class OrphanFileValidator implements MarkdownProjectValidatorInterface
         if (null === $parsedResult) {
             return;
         }
-        $markdownLinks = DomLinkExtractor::extractLinks($parsedResult, $path);
-        $markdownImages = DomLinkExtractor::extractImages($parsedResult, $path);
+        $markdownLinks = DomExtractor::extractLinks($parsedResult, $path);
+        $markdownImages = DomExtractor::extractImages($parsedResult, $path);
 
         foreach ($markdownLinks as $markdownLink) {
             $absolutePath = $markdownLink->absolutePath();

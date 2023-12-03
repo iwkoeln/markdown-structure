@@ -3,7 +3,7 @@
 namespace Iwm\MarkdownStructure\Validator;
 
 use Iwm\MarkdownStructure\Error\LinkTargetNotFoundError;
-use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
+use Iwm\MarkdownStructure\Utility\DomExtractor;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
 
@@ -18,7 +18,7 @@ class MarkdownLinksValidator implements ValidatorInterface
     {
         if ($file instanceof MarkdownFile) {
             $errors = [];
-            $markdownLinks = DomLinkExtractor::extractLinks($file->html, $file->path);
+            $markdownLinks = DomExtractor::extractLinks($file->html, $file->path);
 
             foreach ($markdownLinks as $markdownLink) {
                 $absolutePath = $markdownLink->absolutePath();

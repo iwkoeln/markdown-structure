@@ -5,8 +5,26 @@ namespace Iwm\MarkdownStructure\Utility;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
 use Symfony\Component\DomCrawler\Crawler;
 
-class DomLinkExtractor
+class DomExtractor
 {
+    public static function extractFirstHeadline(string $parsedResult): string
+    {
+        $domCrawler = new Crawler($parsedResult);
+
+        $headlineNodes = $domCrawler->filter('h1, h2, h3, h4, h5, h6');
+        foreach ($headlineNodes as $headlineNode) {
+            foreach ($headlineNode->childNodes as $childNode) {
+                if ($childNode instanceof \DOMText) {
+                    return $childNode->wholeText;
+                }
+            }
+
+            return $headlineNode->textContent;
+        }
+
+        return '';
+    }
+
     /**
      * @return array<MarkdownLink>
      */

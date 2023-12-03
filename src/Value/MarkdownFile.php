@@ -3,6 +3,7 @@
 namespace Iwm\MarkdownStructure\Value;
 
 use Iwm\MarkdownStructure\Error\ErrorInterface;
+use Iwm\MarkdownStructure\Utility\DomExtractor;
 
 class MarkdownFile
 {
@@ -28,5 +29,16 @@ class MarkdownFile
     public function __toString(): string
     {
         return $this->path;
+    }
+
+    public function getTitle(): string
+    {
+        $title = DomExtractor::extractFirstHeadline($this->html);
+        if (empty($title)) {
+            $title = basename($this->path, '.md');
+            $title = ucwords(str_replace(['-', '_'], ' ', $title));
+        }
+
+        return $title;
     }
 }

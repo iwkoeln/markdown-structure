@@ -37,6 +37,7 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
         copy(__DIR__ . '/../Fixtures/docs/features/feature.md', $this->workspacePath . '/docs/features/feature.md');
 
         copy(__DIR__ . '/../Fixtures/docs/dev/some-dev-doc.md', $this->workspacePath . '/docs/dev/some-dev-doc.md');
+        copy(__DIR__ . '/../Fixtures/docs/dev/no-headline.md', $this->workspacePath . '/docs/dev/no-headline.md');
 
         $this->subject = new MarkdownProjectFactory($this->workspacePath);
         $this->subject->addFiles();
@@ -91,6 +92,8 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
         $markdownProject = $this->subject->create();
 
         $this->assertInstanceOf(MarkdownProject::class, $markdownProject);
+        $this->assertSame('Documentation example', $markdownProject->documentationFiles['/index.md']->getTitle());
+        $this->assertSame('No Headline', $markdownProject->documentationFiles['/dev/no-headline.md']->getTitle());
     }
 
     /**
