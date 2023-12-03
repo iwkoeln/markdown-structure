@@ -129,7 +129,7 @@ class MarkdownProjectFactory
 
             // Set the file in the nested file tree as value
             if ($this->enableNestedStructure) {
-                FileTreeBuilder::setValueFromNestedReferencesArray($this->nestedDocumentationFiles, $file, $file);
+                $this->nestedDocumentationFiles = FileTreeBuilder::buildFileTree($this->documentationFiles);
             }
         }
 
@@ -253,14 +253,16 @@ class MarkdownProjectFactory
             throw new \InvalidArgumentException(sprintf('Project files of MarkdownProject allows array of strings or SplFileInfo, only. %s given.', gettype($file)));
         }
 
+        // Use relative file paths for files within $this->absoluteDocumentationPath
+        $relativeFilePath = substr($filePath, strlen($this->absoluteDocumentationPath));
         if (!str_starts_with($filePath, $this->projectRootPath)) {
             $this->referencedExternalFiles[$filePath] = $filePath;
         } elseif (str_starts_with($filePath, $this->absoluteDocumentationPath) && PathUtility::isMarkdownFile($filePath)) {
-            $this->documentationFiles[$filePath] = $this->covertFilePathToMarkdownFileObject($filePath);
+            $this->documentationFiles[$relativeFilePath] = $this->covertFilePathToMarkdownFileObject($filePath);
         } elseif (str_starts_with($filePath, $this->absoluteDocumentationPath) && PathUtility::isMediaFile($filePath)) {
-            $this->documentationMediaFiles[$filePath] = $this->convertFilePathToMediaFileObject($filePath);
+            $this->documentationMediaFiles[$relativeFilePath] = $this->convertFilePathToMediaFileObject($filePath);
         } else {
-            $this->projectFiles[$filePath] = $filePath;
+            $this->projectFiles[$relativeFilePath] = $filePath;
         }
     }
 
@@ -305,11 +307,16 @@ class MarkdownProjectFactory
 
     /**
      * Add Files programmatically by providing an array of file paths.
+     * Or load files, using Finder in given projectRootPath.
      *
-     * @param array<string>|Finder $files
+     * @param array<string>|Finder|null $files
      */
-    public function addFiles(array|Finder $files): void
+    public function addFiles(array|Finder $files = null): void
     {
+        if (null === $files) {
+            $files = Finder::create()->in($this->projectRootPath)->files();
+        }
+
         foreach ($files as $file) {
             $this->addFile($file);
         }

@@ -2,41 +2,42 @@
 
 namespace Iwm\MarkdownStructure\Utility;
 
+use Iwm\MarkdownStructure\Value\MarkdownFile;
+
 class FileTreeBuilder
 {
     /**
      * Converts flat list of file paths to nested array.
      *
-     * @param array|string[] $filePaths
+     * @param array<string, MarkdownFile> $filePaths
      *
-     * @return array<string, mixed> recursive file tree, with absolute file path as values
+     * @return array<string, mixed> recursive file tree
      */
     public static function buildFileTree(array $filePaths): array
     {
         $tree = [];
 
-        foreach (array_values($filePaths) as $path) {
-            $parts = explode('/', $path);
+        foreach ($filePaths as $path => $markdownFile) {
+            $parts = explode('/', ltrim($path, '/'));
             if (is_array($tree)) {
-                $tree = self::addNodeToTree($tree, $parts, $path);
+                $tree = self::addNodeToTree($tree, $parts, $markdownFile);
             }
         }
 
-        if (is_string($tree)) {
-            return [$tree => $tree];
+        if (!is_array($tree)) {
+            throw new \UnexpectedValueException('Error with input, return value should be always a nested array.');
         }
 
         return $tree;
     }
 
     /**
-     * @param array<string, mixed>  $node
-     * @param array|string[]        $path
-     * @param array|string[]|string $value
+     * @param array<string, mixed> $node
+     * @param array|string[]       $path
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed>|MarkdownFile
      */
-    private static function addNodeToTree(array $node, array $path, array|string $value): array|string
+    private static function addNodeToTree(array $node, array $path, MarkdownFile $value): array|MarkdownFile
     {
         if (0 === count($path)) {
             return $value;
@@ -46,19 +47,5 @@ class FileTreeBuilder
         $node[$key] = self::addNodeToTree($node[$key] ?? [], $path, $value);
 
         return $node;
-    }
-
-    /**
-     * @param array<mixed|string> $nestedFiles
-     */
-    public static function setValueFromNestedReferencesArray(array &$nestedFiles, string $newFilePath, mixed $newFileObject): void
-    {
-        $keys = explode('/', $newFilePath);
-        $lastKey = array_pop($keys);
-        $current = &$nestedFiles;
-        foreach ($keys as $key) {
-            $current = &$current[$key];
-        }
-        $current[$lastKey] = $newFileObject;
     }
 }

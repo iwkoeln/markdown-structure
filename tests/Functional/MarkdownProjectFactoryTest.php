@@ -11,6 +11,8 @@ use Iwm\MarkdownStructure\Value\MarkdownProject;
 
 class MarkdownProjectFactoryTest extends AbstractTestCase
 {
+    private MarkdownProjectFactory $subject;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -35,6 +37,9 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
         copy(__DIR__ . '/../Fixtures/docs/features/feature.md', $this->workspacePath . '/docs/features/feature.md');
 
         copy(__DIR__ . '/../Fixtures/docs/dev/some-dev-doc.md', $this->workspacePath . '/docs/dev/some-dev-doc.md');
+
+        $this->subject = new MarkdownProjectFactory($this->workspacePath);
+        $this->subject->addFiles();
     }
 
     /**
@@ -78,14 +83,12 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
      */
     public function testCreateMarkdownProjectWithCustomParsersAndValidators(): void
     {
-        $factory = new MarkdownProjectFactory($this->workspacePath);
-
         $customParser = new ParagraphToContainerParser();
         $customValidator = new MediaFileValidator();
-        $factory->registerParser([$customParser]);
-        $factory->registerValidators([$customValidator]);
+        $this->subject->registerParser([$customParser]);
+        $this->subject->registerValidators([$customValidator]);
 
-        $markdownProject = $factory->create();
+        $markdownProject = $this->subject->create();
 
         $this->assertInstanceOf(MarkdownProject::class, $markdownProject);
     }
