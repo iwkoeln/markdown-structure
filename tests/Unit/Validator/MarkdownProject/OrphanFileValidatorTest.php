@@ -1,11 +1,11 @@
 <?php
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Validator\MarkdownProject;
-use Iwm\MarkdownStructure\Utility\DomLinkExtractor;
+
 use Iwm\MarkdownStructure\Validator\MarkdownProject\OrphanFileValidator;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
-use Iwm\MarkdownStructure\Value\MarkdownProject;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
+use Iwm\MarkdownStructure\Value\MarkdownProject;
 use PHPUnit\Framework\TestCase;
 
 class OrphanFileValidatorTest extends TestCase
@@ -42,5 +42,3 @@ class OrphanFileValidatorTest extends TestCase
         $this->assertEquals($expectedOrphans, $markdownProject->orphans);
     }
 }
-
-

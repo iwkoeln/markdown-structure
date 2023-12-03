@@ -2,9 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Utility;
 
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Tests\AbstractTestCase;
 use Iwm\MarkdownStructure\Utility\FileTreeBuilder;
-use PHPUnit\Framework\TestCase;
 
 class FileTreeBuilderTest extends AbstractTestCase
 {
@@ -14,11 +13,12 @@ class FileTreeBuilderTest extends AbstractTestCase
         '/var/www/html/README.md',
         '/var/www/html/tests/Data/extra-info/sub-file.md',
         '/var/www/html/tests/Data/img/image.jpg',
-        '/var/www/html/tests/Data/img/image.png'
+        '/var/www/html/tests/Data/img/image.png',
     ];
 
     /**
      * @test
+     *
      * @testdox FileTreeBuilder can build a file tree
      */
     public function testBuildFileTree(): void
@@ -45,7 +45,7 @@ class FileTreeBuilderTest extends AbstractTestCase
                         ],
                     ],
                 ],
-            ]
+            ],
         ];
 
         $fileTree = FileTreeBuilder::buildFileTree($this->filePaths);

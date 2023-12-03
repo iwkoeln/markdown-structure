@@ -3,9 +3,6 @@
 if (PHP_SAPI !== 'cli') {
     die('CLI usage only');
 }
-$finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/../src/')
-;
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
@@ -49,5 +46,4 @@ return (new PhpCsFixer\Config())
         'declare_equal_normalize' => ['space' => 'single'],
         'dir_constant' => true,
         'phpdoc_no_access' => true,
-    ])
-    ->setFinder($finder);
+    ]);

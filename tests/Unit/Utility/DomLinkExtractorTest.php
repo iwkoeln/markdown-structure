@@ -60,6 +60,4 @@ class DomLinkExtractorTest extends TestCase
         $expectedLink2 = new MarkdownLink('/path/to/source.md', 'external-link', false, 'External Link');
         $this->assertEquals([$expectedLink1, $expectedLink2], $links);
     }
-
 }
-

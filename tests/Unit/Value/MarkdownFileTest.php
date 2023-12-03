@@ -2,7 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Tests\AbstractTestCase;
+use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 
 class MarkdownFileTest extends AbstractTestCase
@@ -11,7 +12,7 @@ class MarkdownFileTest extends AbstractTestCase
     {
         parent::setUp();
 
-        mkdir($this->workspacePath . '/docs', 0777, true);
+        PathUtility::mkdir($this->workspacePath . '/docs');
 
         copy(__DIR__ . '/../../Fixtures/docs/index.md', $this->workspacePath . '/docs/index.md');
     }
@@ -23,7 +24,7 @@ class MarkdownFileTest extends AbstractTestCase
         $html = '';
 
         $markdownFile = new MarkdownFile($this->workspacePath, $path, $markdown, $html);
-        $this->assertEquals($path, (string) $markdownFile);
+        $this->assertEquals($path, (string)$markdownFile);
     }
 
     public function testMarkdownFileHasDefaultValues()

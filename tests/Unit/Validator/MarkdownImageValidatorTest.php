@@ -3,7 +3,7 @@
 namespace Iwm\MarkdownStructure\Tests\Unit\Validator;
 
 use Iwm\MarkdownStructure\Error\ImageDoesNotExistError;
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Tests\AbstractTestCase;
 use Iwm\MarkdownStructure\Validator\MarkdownImageValidator;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
 use Iwm\MarkdownStructure\Value\MediaFile;
@@ -13,7 +13,7 @@ class MarkdownImageValidatorTest extends AbstractTestCase
     public function testFileCanBeValidatedForMarkdownFile()
     {
         $validator = new MarkdownImageValidator();
-        $markdownFile = new MarkdownFile('','','','','',);
+        $markdownFile = new MarkdownFile('', '', '', '', '');
 
         $this->assertTrue($validator->fileCanBeValidated($markdownFile));
     }
@@ -21,7 +21,7 @@ class MarkdownImageValidatorTest extends AbstractTestCase
     public function testFileCannotBeValidatedForMediaFile()
     {
         $validator = new MarkdownImageValidator();
-        $mediaFile = new MediaFile('','',);
+        $mediaFile = new MediaFile('', '');
 
         $this->assertFalse($validator->fileCanBeValidated($mediaFile));
     }
@@ -29,12 +29,12 @@ class MarkdownImageValidatorTest extends AbstractTestCase
     public function testValidateWithMissingImages()
     {
         $validator = new MarkdownImageValidator();
-        $markdownFile = new MarkdownFile('/path/to/markdown.md','/path/to/markdown.md','','',);
+        $markdownFile = new MarkdownFile('/path/to/markdown.md', '/path/to/markdown.md', '', '');
         $markdownFile->errors = [];
 
         $mediaFiles = [
-            '/path/to/image.jpg' => new MediaFile('/path/to/image.jpg','/path/to/image.jpg'),
-            '/path/to/image.png' => new MediaFile('/path/to/image.png','/path/to/image.png'),
+            '/path/to/image.jpg' => new MediaFile('/path/to/image.jpg', '/path/to/image.jpg'),
+            '/path/to/image.png' => new MediaFile('/path/to/image.png', '/path/to/image.png'),
         ];
 
         // Create a Crawler with an img tag pointing to a missing image
@@ -52,15 +52,15 @@ class MarkdownImageValidatorTest extends AbstractTestCase
     public function testValidateWithExistingImages()
     {
         $validator = new MarkdownImageValidator();
-        $markdownFile = new MarkdownFile('/path/to/markdown.md','/path/to/markdown.md', '');
+        $markdownFile = new MarkdownFile('/path/to/markdown.md', '/path/to/markdown.md', '');
         $markdownFile->errors = [];
 
         $mediaFiles = [
-            '/path/to/image.jpg' => new MediaFile('/path/to/image.jpg','/path/to/image.jpg'),
-            '/path/to/image.png' => new MediaFile('/path/to/image.jpg','/path/to/image.jpg'),
+            '/path/to/image.jpg' => new MediaFile('/path/to/image.jpg', '/path/to/image.jpg'),
+            '/path/to/image.png' => new MediaFile('/path/to/image.jpg', '/path/to/image.jpg'),
         ];
 
-        $markdownFile->html = '<img src="image.jpg" alt="Image 1">' . '<img src="image.png" alt="Image 2">';
+        $markdownFile->html = '<img src="image.jpg" alt="Image 1"><img src="image.png" alt="Image 2">';
 
         $validator->validate($markdownFile, [], $mediaFiles);
 

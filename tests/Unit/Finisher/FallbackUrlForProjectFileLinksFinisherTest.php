@@ -4,7 +4,6 @@ namespace Iwm\MarkdownStructure\Tests\Unit\Finisher;
 
 use Iwm\MarkdownStructure\Finisher\FallbackUrlForProjectFileLinksFinisher;
 use Iwm\MarkdownStructure\Value\MarkdownFile;
-use Iwm\MarkdownStructure\Value\MarkdownLink;
 use Iwm\MarkdownStructure\Value\MediaFile;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +32,7 @@ class FallbackUrlForProjectFileLinksFinisherTest extends TestCase
     public function testFinishMarkdownFileWithEmptyDocumentationFiles()
     {
         $finisher = new FallbackUrlForProjectFileLinksFinisher();
-        $markdownFile = new MarkdownFile('/path/to/','/path/to/file.md', 'Markdown content', '<a href="/path/to/image.png">Some link</a>', 'https://fallback.url');
+        $markdownFile = new MarkdownFile('/path/to/', '/path/to/file.md', 'Markdown content', '<a href="/path/to/image.png">Some link</a>', 'https://fallback.url');
 
         $result = $finisher->finish($markdownFile, [], [], []);
 

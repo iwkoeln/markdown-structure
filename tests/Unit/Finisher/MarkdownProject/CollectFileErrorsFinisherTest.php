@@ -21,7 +21,6 @@ class CollectFileErrorsFinisherTest extends TestCase
         $markdownFile2 = new MarkdownFile('/path', '/path/to/file2.md', 'Markdown content', '', '');
         $markdownFile2->errors = ['Error 3'];
 
-
         $mediaFile1 = new MediaFile('/path/to/image1.jpg');
         $mediaFile1->errors = ['Error 4'];
 

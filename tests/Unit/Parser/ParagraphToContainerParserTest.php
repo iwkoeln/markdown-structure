@@ -53,6 +53,6 @@ class ParagraphToContainerParserTest extends TestCase
 
         // Check that the parser converts empty content to empty content
         $this->assertInstanceOf(MarkdownFile::class, $parsedFile);
-        $this->assertEmpty($parsedFile->sectionedResult[0]->content);
+        $this->assertFalse(isset($parsedFile->sectionedResult[0]));
     }
 }

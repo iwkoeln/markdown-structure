@@ -53,7 +53,7 @@ class MarkdownParagraphToHTMLParserTest extends TestCase
     public function testParseMarkdownFileWithNoParagraphs(): void
     {
         $parser = new MarkdownParagraphToHTMLParser();
-        $markdownContent = "This is a single line.";
+        $markdownContent = 'This is a single line.';
         $markdownFile = new MarkdownFile('/path', 'file.md', $markdownContent);
 
         $section1 = (new Section(SectionType::PARAGRAPH));

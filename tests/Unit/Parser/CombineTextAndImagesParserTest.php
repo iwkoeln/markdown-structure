@@ -34,7 +34,7 @@ class CombineTextAndImagesParserTest extends TestCase
         $section1 = (new Section(SectionType::HEADLINE));
         $section1->content = [
             'Some text',
-            '![Image 1](image1.jpg)'
+            '![Image 1](image1.jpg)',
         ];
 
         $markdownFile->sectionedResult = [$section1];
@@ -59,7 +59,7 @@ class CombineTextAndImagesParserTest extends TestCase
         $section1->content = [
             '![Image 1](image1.jpg)',
             '![Image 1](image1.jpg)',
-            '![Image 1](image1.jpg)'
+            '![Image 1](image1.jpg)',
         ];
 
         $markdownFile->sectionedResult = [$section1];
@@ -84,21 +84,21 @@ class CombineTextAndImagesParserTest extends TestCase
         $section1->content = [
             'Some text',
             'Some text',
-            'Some text'
+            'Some text',
         ];
 
         $section2 = (new Section(SectionType::HEADLINE));
         $section2->content = [
             '![Image 1](image1.jpg)',
             'Some text',
-            '![Image 1](image1.jpg)'
+            '![Image 1](image1.jpg)',
         ];
 
         $section3 = (new Section(SectionType::HEADLINE));
         $section3->content = [
             'Some text',
             '![Image 1](image1.jpg)',
-            '![Image 1](image1.jpg)'
+            '![Image 1](image1.jpg)',
         ];
 
         $markdownFile->sectionedResult = [$section1, $section2, $section3];

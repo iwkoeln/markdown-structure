@@ -9,6 +9,7 @@ class SectionTypeTest extends TestCase
 {
     /**
      * @test
+     *
      * @testdox SectionType::HEADLINE is defined and accessible
      */
     public function testHeadlineSectionType()

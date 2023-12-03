@@ -2,7 +2,7 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Tests\AbstractTestCase;
 use Iwm\MarkdownStructure\Value\Section;
 use Iwm\MarkdownStructure\Value\SectionType;
 
@@ -10,6 +10,7 @@ class SectionTest extends AbstractTestCase
 {
     /**
      * @test
+     *
      * @testdox Section can be created with a type
      */
     public function testSectionCreation()
@@ -23,6 +24,7 @@ class SectionTest extends AbstractTestCase
 
     /**
      * @test
+     *
      * @testdox Section properties can be set and retrieved
      */
     public function testSectionProperties()

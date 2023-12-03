@@ -21,15 +21,8 @@ pipelines:
           # Install Composer
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-          # Set the base path for the tests
-          - export BASE_PATH=/opt/atlassian/pipelines/agent/build
-
           # Install project dependencies
           - composer install
 
           # Run tests
           - composer run-script test
-
-definitions:
-  caches:
-    composer: /root/.composer

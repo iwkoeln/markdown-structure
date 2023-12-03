@@ -29,7 +29,7 @@ class MarkdownToHtmlParserTest extends TestCase
     {
         $parser = new MarkdownToHtmlParser();
         $markdownFile = new MarkdownFile('/path', 'file.md', '');
-        $markdownFile->markdown = "**Bold Text** *Italic Text* [Link Text](https://example.com)";
+        $markdownFile->markdown = '**Bold Text** *Italic Text* [Link Text](https://example.com)';
 
         $parsedFile = $parser->parse($markdownFile, [], [], []);
 

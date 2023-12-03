@@ -2,10 +2,9 @@
 
 namespace Iwm\MarkdownStructure\Tests\Unit\Value;
 
-use Iwm\MarkdownStructure\Tests\Functional\AbstractTestCase;
+use Iwm\MarkdownStructure\Tests\AbstractTestCase;
 use Iwm\MarkdownStructure\Utility\PathUtility;
 use Iwm\MarkdownStructure\Value\MarkdownLink;
-use PHPUnit\Framework\TestCase;
 
 class MarkdownLinkTest extends AbstractTestCase
 {
@@ -21,7 +20,9 @@ class MarkdownLinkTest extends AbstractTestCase
 
     /**
      * @test
+     *
      * @dataProvider externalLinkProvider
+     *
      * @testdox MarkdownLink is marked as external for external links
      */
     public function testLinkIsExternalForExternalLinks($url)
@@ -41,7 +42,9 @@ class MarkdownLinkTest extends AbstractTestCase
 
     /**
      * @test
+     *
      * @dataProvider internalLinkProvider
+     *
      * @testdox MarkdownLink is marked as internal for internal links
      */
     public function testLinkIsInternalForInternalLinks($url)
@@ -52,6 +55,7 @@ class MarkdownLinkTest extends AbstractTestCase
 
     /**
      * @test
+     *
      * @testdox MarkdownLink can convert to an absolute path
      */
     public function testMarkdownLinkAbsolutePath()

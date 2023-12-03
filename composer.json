@@ -60,14 +60,14 @@
     "scripts": {
         "test": [
             "@composer dump -o",
-            "@test-php-unit"
+            "@test-php"
         ],
         "test-with-coverage": [
             "@composer dump -o",
-            "@test-php-unit-coverage"
+            "@test-php-coverage"
         ],
-        "test-php-unit": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests",
-        "test-php-unit-coverage": "export XDEBUG_MODE=coverage && ./vendor/bin/phpunit tests --coverage-text --coverage-filter ./src",
+        "test-php": "phpunit -c .build/phpunit.xml tests --no-coverage",
+        "test-php-coverage": "export XDEBUG_MODE=coverage && phpunit -c .build/phpunit.xml tests --coverage-text",
         "check": [
             "@editorconfig-check",
             "@phpcs",
@@ -81,8 +81,8 @@
         ],
         "editorconfig-check": "ec -g -u",
         "editorconfig-fix": "ec -g --fix",
-        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi --verbose --diff --dry-run -- src",
-        "phpcs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi -- src",
+        "phpcs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi --verbose --diff --dry-run -- src tests",
+        "phpcs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --config .build/php-cs-rules.php --ansi -- src tests",
         "phpstan": "phpstan analyse -c .build/phpstan.neon -l 8 -- src"
     },
     "config": {
