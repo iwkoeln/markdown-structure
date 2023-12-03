@@ -30,7 +30,7 @@ final class FallbackUrlForProjectFileLinksFinisher implements FinisherInterface
         foreach ($links as $link) {
             if ($link instanceof MarkdownLink && !in_array($link->absolutePath(), $documentationFiles)) {
                 $absolutePath = $link->absolutePath();
-                $relativePath = PathUtility::resolveRelativePath($file->basePath, $absolutePath);
+                $relativePath = PathUtility::resolveRelativePath($file->baseDocumentationPath, $absolutePath);
                 $file->html = str_replace($link->target, rtrim($file->fallbackUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($relativePath, DIRECTORY_SEPARATOR), $file->html);
             }
         }

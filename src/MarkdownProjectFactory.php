@@ -215,7 +215,7 @@ class MarkdownProjectFactory
     private function covertFilePathToMarkdownFileObject(string $filePath): MarkdownFile
     {
         return new MarkdownFile(
-            $this->projectRootPath,
+            $this->absoluteDocumentationPath,
             $filePath,
             $this->readFile($filePath),
             '',

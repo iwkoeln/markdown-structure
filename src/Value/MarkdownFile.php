@@ -17,7 +17,7 @@ class MarkdownFile
      * @param array<ErrorInterface> $errors
      */
     public function __construct(
-        readonly public string $basePath,
+        readonly public string $baseDocumentationPath,
         readonly public string $path,
         public string $markdown,
         public string $html = '',
@@ -40,5 +40,10 @@ class MarkdownFile
         }
 
         return $title;
+    }
+
+    public function getRelativePath(): string
+    {
+        return substr($this->path, strlen($this->baseDocumentationPath));
     }
 }

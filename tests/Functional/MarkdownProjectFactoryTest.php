@@ -94,6 +94,7 @@ class MarkdownProjectFactoryTest extends AbstractTestCase
         $this->assertInstanceOf(MarkdownProject::class, $markdownProject);
         $this->assertSame('Documentation example', $markdownProject->documentationFiles['/index.md']->getTitle());
         $this->assertSame('No Headline', $markdownProject->documentationFiles['/dev/no-headline.md']->getTitle());
+        $this->assertSame('/dev/no-headline.md', $markdownProject->documentationFiles['/dev/no-headline.md']->getRelativePath());
     }
 
     /**
