@@ -12,8 +12,8 @@ pipelines:
           - apt-get install -y unzip libzip-dev git
 
           # Install Xdebug
-          - pecl install xdebug
-          - docker-php-ext-enable xdebug
+          # - pecl install xdebug
+          # - docker-php-ext-enable xdebug
 
           # Install zip extension
           - docker-php-ext-install zip
