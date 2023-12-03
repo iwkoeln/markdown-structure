@@ -2,6 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Collection;
 
-final class ValidatorCollection extends AbstractCollection
+use Doctrine\Common\Collections\ArrayCollection;
+
+final class ValidatorCollection extends ArrayCollection
 {
 }

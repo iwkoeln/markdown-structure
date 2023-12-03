@@ -2,6 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Collection;
 
-final class FinisherCollection extends AbstractCollection
+use Doctrine\Common\Collections\ArrayCollection;
+
+final class FinisherCollection extends ArrayCollection
 {
 }

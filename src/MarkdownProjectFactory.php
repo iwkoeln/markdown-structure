@@ -162,7 +162,7 @@ class MarkdownProjectFactory
     public function parseFile(MarkdownFile|MediaFile $file): void
     {
         /** @var ParserInterface $parser */
-        foreach ($this->parser->getItems() as $parser) {
+        foreach ($this->parser as $parser) {
             $parser->parse($file, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
         }
     }
@@ -173,7 +173,7 @@ class MarkdownProjectFactory
     public function finishFile(MarkdownFile|MediaFile $file): void
     {
         /** @var FinisherInterface $finisher */
-        foreach ($this->finisher->getItems() as $finisher) {
+        foreach ($this->finisher as $finisher) {
             $finisher->finish($file, $this->documentationFiles, $this->documentationMediaFiles, $this->projectFiles);
         }
     }
@@ -184,7 +184,7 @@ class MarkdownProjectFactory
     private function validateFile(MarkdownFile|MediaFile $file): void
     {
         /** @var ValidatorInterface $validator */
-        foreach ($this->validators->getItems() as $validator) {
+        foreach ($this->validators as $validator) {
             $validator->validate($file, $this->documentationFiles, $this->documentationMediaFiles);
         }
     }
@@ -193,7 +193,7 @@ class MarkdownProjectFactory
     private function validateMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectValidatorInterface $validator */
-        foreach ($this->markdownProjectValidators->getItems() as $validator) {
+        foreach ($this->markdownProjectValidators as $validator) {
             $validator->validate($markdownProject);
         }
     }
@@ -202,7 +202,7 @@ class MarkdownProjectFactory
     private function finishMarkdownProject(MarkdownProject $markdownProject): void
     {
         /** @var MarkdownProjectFinisherInterface $finisher */
-        foreach ($this->markdownProjectFinisher->getItems() as $finisher) {
+        foreach ($this->markdownProjectFinisher as $finisher) {
             $finisher->finish($markdownProject);
         }
     }

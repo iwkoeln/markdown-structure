@@ -2,6 +2,8 @@
 
 namespace Iwm\MarkdownStructure\Collection;
 
-final class ParserCollection extends AbstractCollection
+use Doctrine\Common\Collections\ArrayCollection;
+
+final class ParserCollection extends ArrayCollection
 {
 }
